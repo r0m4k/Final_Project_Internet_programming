@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <!-- Auth Section -->
+  <section class="auth-container">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="auth-box">
+            <div class="row g-0">
+              <div class="col-lg-5 d-none d-lg-block">
+                <div class="auth-side h-100">
+                  <h2 class="mb-4">Welcome to Bridge Online School</h2>
+                  <p>Join our community of bridge enthusiasts and start your learning journey today!</p>
+                  <div class="mt-4">
+                    <ul class="list-unstyled">
+                      <li class="mb-3"><i class="bi bi-check-circle me-2"></i> Expert teachers from around the world</li>
+                      <li class="mb-3"><i class="bi bi-check-circle me-2"></i> Flexible learning schedule</li>
+                      <li class="mb-3"><i class="bi bi-check-circle me-2"></i> Interactive learning materials</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-7">
+                <div class="auth-form">
+                  <!-- Sign Up Form (Initially Hidden) -->
+                  <div id="signUpForm">
+                    <h3 class="mb-4">Create Account</h3>
+
+                    <form method="POST" action="{% url 'authentication:register' %}" id="registrationForm">
+                    {% csrf_token %}
+
+                    {{form.as_p}}
+
+                      <button class="btn-getstarted w-100 rounded-pill" type="submit">Create Account</button>
+                    </form>
+
+                    <div class="auth-separator">
+                      <span class="px-2 bg-white">or</span>
+                    </div>
+
+
+                    <div class="toggle-form">
+                      <p>Already have an account? <a href="{% url 'authentication:login' %}" class="description-title">Sign In</a></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+

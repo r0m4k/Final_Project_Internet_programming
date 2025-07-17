@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <!-- Profile Section -->
+  <section class="auth-container">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="auth-box">
+            <div class="row g-0">
+              <!-- Sidebar with navigation -->
+              <div class="col-lg-1">
+                <div class="profile-sidebar h-100">
+                  <div class="profile-header mb-4">
+                    <div class="profile-avatar">
+                      <i class="bi bi-file-person"></i>
+                    </div>
+                  </div>
+                  
+                  <nav class="profile-nav">
+                    <ul class="list-unstyled">
+                      <li class="mb-3">
+                        <a href="#settings" class="profile-nav-link active" data-section="settings">
+                          <i class="bi bi-gear"></i>
+                        </a>
+                      </li>
+                      <li class="mb-3">
+                        <a href="#messages" class="profile-nav-link" data-section="messages">
+                          <i class="bi bi-envelope"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+              
+              <!-- Main content area -->
+              <div class="col-lg-11">
+                <div class="profile-content">
+                  <!-- Settings Section -->
+                  <div id="settings-section" class="profile-section active">
+                    <h3 class="mb-4">Account Settings</h3>
+                    
+                    <form method="POST" action="{% url 'authentication:profile' %}">
+                      {% csrf_token %}
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="firstName" name="first_name" value="{{ user.first_name }}" placeholder="First Name">
+                            <label for="firstName">First Name</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="lastName" name="last_name" value="{{ user.last_name }}" placeholder="Last Name">
+                            <label for="lastName">Last Name</label>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" placeholder="Email">
+                        <label for="email">Email</label>
+                      </div>
+                      
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" placeholder="Username">
+                        <label for="username">Username</label>
+                      </div>
+                      
+                      <hr class="my-4">
+                      
+                      <h5 class="mb-3">Change Password</h5>
+                      <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="currentPassword" name="current_password" placeholder="Current Password">
+                        <label for="currentPassword">Current Password</label>
+                      </div>
+                      
+                      <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="newPassword" name="new_password" placeholder="New Password">
+                        <label for="newPassword">New Password</label>
+                      </div>
+                      
+                      <div class="form-floating mb-4">
+                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password" placeholder="Confirm New Password">
+                        <label for="confirmPassword">Confirm New Password</label>
+                      </div>
+                      
+                      <button class="btn-getstarted rounded-pill" type="submit">Save Changes</button>
+                    </form>
+                  </div>
+                  
+                  <!-- Messages Section -->
+                  <div id="messages-section" class="profile-section">
+                    <h3 class="mb-4">Messages</h3>
+                    
+                    <div class="messages-container">
+                      <div class="message-item">
+                        <div class="message-header">
+                          <div class="message-avatar">
+                            <i class="bi bi-person-circle"></i>
+                          </div>
+                          <div class="message-info">
+                            <h6>System Administrator</h6>
+                            <small class="text-muted">2 hours ago</small>
+                          </div>
+                        </div>
+                        <div class="message-content">
+                          <p>Welcome to Bridge Online School! We're excited to have you as part of our community.</p>
+                        </div>
+                      </div>
+                      
+                      <div class="message-item">
+                        <div class="message-header">
+                          <div class="message-avatar">
+                            <i class="bi bi-person-circle"></i>
+                          </div>
+                          <div class="message-info">
+                            <h6>Course Instructor</h6>
+                            <small class="text-muted">1 day ago</small>
+                          </div>
+                        </div>
+                        <div class="message-content">
+                          <p>Your next lesson is scheduled for tomorrow. Don't forget to review the materials!</p>
+                        </div>
+                      </div>
+                      
+                      <div class="text-center mt-4">
+                        <p class="text-muted">No more messages</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mobile Navigation for smaller screens -->
+  <div class="mobile-profile-nav d-lg-none">
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <button class="btn btn-outline-secondary w-100 mobile-nav-btn active" data-section="settings">
+            <i class="bi bi-gear me-2"></i>Settings
+          </button>
+        </div>
+        <div class="col-6">
+          <button class="btn btn-outline-secondary w-100 mobile-nav-btn" data-section="messages">
+            <i class="bi bi-envelope me-2"></i>Messages
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .profile-sidebar {
+      background: linear-gradient(135deg, #942828 0%, #b00006 100%);
+      color: white;
+      padding: 20px 10px;
+      border-radius: 10px 0 0 10px;
+      width: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .profile-header {
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+    }
+    
+    .profile-nav {
+      width: 100%;
+    }
+    
+    .profile-nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s;
+      font-size: 1.2rem;
+    }
+    
+    .profile-nav-link:hover,
+    .profile-nav-link.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      text-decoration: none;
+    }
+    
+    .profile-content {
+      padding: 30px;
+    }
+    
+    .profile-section {
+      display: none;
+    }
+    
+    .profile-section.active {
+      display: block;
+    }
+    
+    .message-item {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .message-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      background: #942828;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+    
+    .mobile-profile-nav {
+      background: white;
+      padding: 15px 0;
+      border-top: 1px solid #eee;
+      position: sticky;
+      top: 70px;
+      z-index: 100;
+    }
+    
+    .mobile-nav-btn.active {
+      background: #942828;
+      color: white;
+      border-color: #942828;
+    }
+    
+    @media (max-width: 991px) {
+      .profile-sidebar {
+        display: none;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Handle desktop navigation
+      const navLinks = document.querySelectorAll('.profile-nav-link');
+      const sections = document.querySelectorAll('.profile-section');
+      
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Remove active class from all links and sections
+          navLinks.forEach(l => l.classList.remove('active'));
+          sections.forEach(s => s.classList.remove('active'));
+          
+          // Add active class to clicked link
+          this.classList.add('active');
+          
+          // Show corresponding section
+          const sectionId = this.getAttribute('data-section') + '-section';
+          document.getElementById(sectionId).classList.add('active');
+        });
+      });
+      
+      // Handle mobile navigation
+      const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+      
+      mobileNavBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Remove active class from all mobile buttons and sections
+          mobileNavBtns.forEach(b => b.classList.remove('active'));
+          sections.forEach(s => s.classList.remove('active'));
+          
+          // Add active class to clicked button
+          this.classList.add('active');
+          
+          // Show corresponding section
+          const sectionId = this.getAttribute('data-section') + '-section';
+          document.getElementById(sectionId).classList.add('active');
+        });
+      });
+    });
+  </script>
+{% endblock %}

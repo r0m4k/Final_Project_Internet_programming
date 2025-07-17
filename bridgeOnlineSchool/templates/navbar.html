@@ -1,0 +1,64 @@
+<header id="header" class="header d-flex align-items-center fixed-top margin-bottom-200">
+    <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
+        <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.webp" alt=""> -->
+        <h1 class="sitename">BOS.</h1>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li><a href="{% url 'landing:home' %}" class="active">Home</a></li>
+                <li><a href="aboutUs.html">About Us</a></li>
+                <li><a href="#pricing">Materials</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <!-- Desktop User Section -->
+        <div class="desktop-user-section">
+            {% if user.is_authenticated %}
+                <a href="{% url 'authentication:profile' %}" class="user-section">
+                    <i class="bi bi-file-person" id="profile-icon"></i>
+                    <span>{{ user.first_name|default:user.username }}</span>
+                </a>
+                <a class="btn-getstarted rounded-pill" href="{% url 'authentication:logout' %}">Logout</a>
+            {% else %}
+                <a class="btn-getstarted rounded-pill" href="{% url 'authentication:login' %}">Sign-in / Sign-up</a>
+            {% endif %}
+        </div>
+
+        <!-- Mobile Hamburger Menu -->
+        <i class="mobile-nav-toggle bi bi-list"></i>
+    </div>
+</header>
+
+<!-- Mobile Sliding Navigation - Outside header for proper z-index stacking -->
+<nav id="mobile-navmenu" class="mobile-navmenu">
+    <i class="mobile-nav-close bi bi-x"></i>
+    
+    <ul class="mobile-nav-list">
+        <li><a href="{% url 'landing:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"><span>Home</span></a></li>
+        <li><a href="aboutUs.html"><span>About Us</span></a></li>
+        <li><a href="#pricing"><span>Materials</span></a></li>
+        <li><a href="#contact"><span>Contact</span></a></li>
+    </ul>
+
+    <!-- Mobile User Section -->
+    <div class="mobile-user-section">
+        {% if user.is_authenticated %}
+            <a href="{% url 'authentication:profile' %}" class="mobile-profile">
+                <i class="bi bi-file-person" id="mobile-profile-icon"></i>
+                <span>{{ user.first_name|default:user.username }}</span>
+            </a>
+            <a class="btn-getstarted rounded-pill" href="{% url 'authentication:logout' %}">Logout</a>
+        {% else %}
+            <a class="btn-getstarted rounded-pill" href="{% url 'authentication:login' %}">Sign-in / Sign-up</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- Mobile Overlay - Outside header to cover entire page -->
+<div class="mobile-nav-overlay"></div>
+
