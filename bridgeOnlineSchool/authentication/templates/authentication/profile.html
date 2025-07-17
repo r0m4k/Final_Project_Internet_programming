@@ -26,6 +26,11 @@
                         </a>
                       </li>
                       <li class="mb-3">
+                        <a href="#teacher" class="profile-nav-link" data-section="teacher">
+                          <i class="bi bi-person-video3"></i>
+                        </a>
+                      </li>
+                      <li class="mb-3">
                         <a href="#messages" class="profile-nav-link" data-section="messages">
                           <i class="bi bi-envelope"></i>
                         </a>
@@ -42,41 +47,45 @@
                   <div id="settings-section" class="profile-section active">
                     <h3 class="mb-4">Account Settings</h3>
                     
+                    {% if messages %}
+                      {% for message in messages %}
+                        <ul class="errorlist">
+                          <li>{{ message }}</li>
+                        </ul>
+                      {% endfor %}
+                    {% endif %}
+
                     <form method="POST" action="{% url 'authentication:profile' %}">
                       {% csrf_token %}
                       <div class="row">
                         <div class="col-md-6">
                           <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="firstName" name="first_name" value="{{ user.first_name }}" placeholder="First Name">
+                            <input type="text" class="form-control" id="firstName" name="first_name" value="{{ user.first_name }}" placeholder="First Name" maxlength="100">
                             <label for="firstName">First Name</label>
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="lastName" name="last_name" value="{{ user.last_name }}" placeholder="Last Name">
+                            <input type="text" class="form-control" id="lastName" name="last_name" value="{{ user.last_name }}" placeholder="Last Name" maxlength="100">
                             <label for="lastName">Last Name</label>
                           </div>
                         </div>
                       </div>
                       
                       <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" placeholder="Email">
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" placeholder="Email" maxlength="254">
                         <label for="email">Email</label>
                       </div>
                       
                       <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" placeholder="Username">
+                        <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" placeholder="Username" maxlength="50">
                         <label for="username">Username</label>
                       </div>
                       
                       <hr class="my-4">
                       
                       <h5 class="mb-3">Change Password</h5>
-                      <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="currentPassword" name="current_password" placeholder="Current Password">
-                        <label for="currentPassword">Current Password</label>
-                      </div>
-                      
+
                       <div class="form-floating mb-3">
                         <input type="password" class="form-control" id="newPassword" name="new_password" placeholder="New Password">
                         <label for="newPassword">New Password</label>
@@ -88,6 +97,134 @@
                       </div>
                       
                       <button class="btn-getstarted rounded-pill" type="submit">Save Changes</button>
+                    </form>
+                  </div>
+                  
+                  <!-- Teacher Profile Section -->
+                  <div id="teacher-section" class="profile-section">
+                    <h3 class="mb-4">Teacher Profile</h3>
+                    
+                    {% if teacher_profile %}
+                      <div class="alert alert-success d-flex align-items-center mb-4">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <div>
+                          <strong>Teacher Profile Active!</strong> Your teacher profile is currently active and visible to students.
+                        </div>
+                      </div>
+                    {% else %}
+                      <div class="alert alert-info d-flex align-items-center mb-4">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <div>
+                          <strong>Become a Teacher!</strong> Create your teacher profile to start offering lessons and courses.
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    {% if messages %}
+                      {% for message in messages %}
+                        {% if 'Teacher' in message.message or 'teacher' in message.message %}
+                          <ul class="errorlist">
+                            <li>{{ message }}</li>
+                          </ul>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'authentication:profile' %}" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      
+                      <div class="mb-4">
+                        <h5 class="mb-3">Personal Information</h5>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control" id="teacherFirstName" value="{{ user.first_name }}" disabled>
+                              <label for="teacherFirstName">First Name (Auto-filled)</label>
+                              <small class="form-text text-muted">This is automatically filled from your account information.</small>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              <input type="text" class="form-control" id="teacherLastName" value="{{ user.last_name }}" disabled>
+                              <label for="teacherLastName">Last Name (Auto-filled)</label>
+                              <small class="form-text text-muted">This is automatically filled from your account information.</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mb-4">
+                        <h5 class="mb-3">Professional Information</h5>
+                        
+                        <div class="form-floating mb-3">
+                          {{ teacher_form.title }}
+                          <label for="{{ teacher_form.title.id_for_label }}">Professional Title *</label>
+                          <small class="form-text text-muted">e.g., Mathematics Teacher, English Tutor, Piano Instructor</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                          <label for="{{ teacher_form.experience.id_for_label }}" class="form-label">Professional Teaching Experience *</label>
+                          {{ teacher_form.experience }}
+                          <small class="form-text text-muted">Describe your professional teaching experience, qualifications, areas of expertise, and educational background (maximum 500 characters)</small>
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                          {{ teacher_form.teaching_years }}
+                          <label for="{{ teacher_form.teaching_years.id_for_label }}">Years of Teaching Experience</label>
+                          <small class="form-text text-muted">How many years have you been teaching? (optional)</small>
+                        </div>
+                      </div>
+
+                      <div class="mb-4">
+                        <h5 class="mb-3">Profile & Pricing</h5>
+                        
+                        <div class="mb-3">
+                          <label for="{{ teacher_form.avatar.id_for_label }}" class="form-label">Profile Picture *</label>
+                          {{ teacher_form.avatar }}
+                          <small class="form-text text-muted">Upload a professional photo that will be displayed on your teacher profile</small>
+                          {% if teacher_profile and teacher_profile.avatar %}
+                            <div class="mt-2">
+                              <small class="text-success">
+                                <i class="bi bi-check-circle me-1"></i>Current image: {{ teacher_profile.avatar.name|slice:":50" }}
+                              </small>
+                            </div>
+                          {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              {{ teacher_form.lesson_price }}
+                              <label for="{{ teacher_form.lesson_price.id_for_label }}">Lesson Price (USD) *</label>
+                              <small class="form-text text-muted">Price for individual lessons</small>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                              {{ teacher_form.course_price }}
+                              <label for="{{ teacher_form.course_price.id_for_label }}">Course Price (USD) *</label>
+                              <small class="form-text text-muted">Price for complete courses</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mb-4">
+                        <div class="alert alert-warning d-flex align-items-center">
+                          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                          <div>
+                            <strong>Note:</strong> Your teacher profile will be automatically set as active and visible to students once saved.
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <button class="btn-getstarted rounded-pill" type="submit" name="teacher_profile_submit" value="1">
+                        {% if teacher_profile %}
+                          <i class="bi bi-arrow-repeat me-2"></i>Update Teacher Profile
+                        {% else %}
+                          <i class="bi bi-plus-circle me-2"></i>Create Teacher Profile
+                        {% endif %}
+                      </button>
                     </form>
                   </div>
                   
@@ -144,14 +281,49 @@
   <div class="mobile-profile-nav d-lg-none">
     <div class="container">
       <div class="row">
-        <div class="col-6">
+        <div class="col-4">
           <button class="btn btn-outline-secondary w-100 mobile-nav-btn active" data-section="settings">
-            <i class="bi bi-gear me-2"></i>Settings
+            <i class="bi bi-gear me-1"></i>Settings
           </button>
         </div>
-        <div class="col-6">
+        <div class="col-4">
+          <button class="btn btn-outline-secondary w-100 mobile-nav-btn" data-section="teacher">
+            <i class="bi bi-person-video3 me-1"></i>Teacher
+          </button>
+        </div>
+        <div class="col-4">
           <button class="btn btn-outline-secondary w-100 mobile-nav-btn" data-section="messages">
-            <i class="bi bi-envelope me-2"></i>Messages
+            <i class="bi bi-envelope me-1"></i>Messages
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="confirm-changes-modal" tabindex="-1" aria-labelledby="confirmChangesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header border-0" style="background: linear-gradient(135deg, #942828 0%, #b00006 100%); color: white;">
+          <h5 class="modal-title" id="confirmChangesModalLabel">
+            <i class="bi bi-exclamation-triangle me-2"></i>Confirm Changes
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="mb-3">You are about to make the following changes:</p>
+          <div id="changes-list" class="changes-container">
+            <!-- Changes will be populated here by JavaScript -->
+          </div>
+          <p class="text-muted mt-3 mb-0">
+            <small><i class="bi bi-info-circle me-1"></i>Are you sure you want to proceed?</small>
+          </p>
+        </div>
+        <div class="modal-footer border-0 bg-light">
+          <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-2"></i>Cancel
+          </button>
+          <button type="button" class="btn-getstarted rounded-pill px-4" id="confirm-save-btn">
+            <i class="bi bi-check-circle me-2"></i>Save Changes
           </button>
         </div>
       </div>
@@ -267,10 +439,406 @@
         display: none;
       }
     }
+    
+    /* Modal styling */
+    .changes-container {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+    }
+    
+    .change-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .change-item:last-child {
+      border-bottom: none;
+    }
+    
+    .change-label {
+      font-weight: 600;
+      color: #495057;
+      font-size: 1rem;
+    }
   </style>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('#settings-section form');
+      const confirmSaveBtn = document.getElementById('confirm-save-btn');
+      const confirmChangesModal = new bootstrap.Modal(document.getElementById('confirm-changes-modal'));
+      const changesList = document.getElementById('changes-list');
+      
+      // Store original values
+      const originalValues = {
+        first_name: '{{ user.first_name|escapejs }}',
+        last_name: '{{ user.last_name|escapejs }}',
+        email: '{{ user.email|escapejs }}',
+        username: '{{ user.username|escapejs }}'
+      };
+
+      // Function to show alert messages
+      function showAlert(message, section = 'account') {
+        let alertContainer = document.querySelector('#settings-section');
+        
+        // Remove ALL existing error messages
+        const existingErrors = alertContainer.querySelectorAll('.errorlist');
+        existingErrors.forEach(error => error.remove());
+        
+        // Create simple error message HTML
+        const errorHtml = `
+          <ul class="errorlist">
+            <li>${message}</li>
+          </ul>
+        `;
+        
+        // Insert error after the appropriate title
+        if (section === 'password') {
+          const passwordTitle = alertContainer.querySelector('h5'); // "Change Password" title
+          passwordTitle.insertAdjacentHTML('afterend', errorHtml);
+        } else {
+          const accountTitle = alertContainer.querySelector('h3'); // "Account Settings" title
+          accountTitle.insertAdjacentHTML('afterend', errorHtml);
+        }
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const firstName = formData.get('first_name');
+        const lastName = formData.get('last_name');
+        const email = formData.get('email');
+        const username = formData.get('username');
+        const newPassword = formData.get('new_password');
+        const confirmPassword = formData.get('confirm_password');
+        
+        // Validate first name
+        if (firstName) {
+          if (firstName.length > 100) {
+            showAlert('First name must be 100 characters or fewer.', 'account');
+            return;
+          }
+          if (!firstName.match(/^[a-zA-Z\s]+$/)) {
+            showAlert('First name can only contain letters.', 'account');
+            return;
+          }
+        }
+        
+        // Validate last name
+        if (lastName) {
+          if (lastName.length > 100) {
+            showAlert('Last name must be 100 characters or fewer.', 'account');
+            return;
+          }
+          if (!lastName.match(/^[a-zA-Z\s]+$/)) {
+            showAlert('Last name can only contain letters.', 'account');
+            return;
+          }
+        }
+        
+        // Validate username
+        if (username) {
+          console.log('Username length:', username.length); // Debug log
+          if (username.length > 50) {
+            showAlert('Username must be 50 characters or fewer.', 'account');
+            return;
+          }
+          if (username.length === 0) {
+            showAlert('Username cannot be empty.', 'account');
+            return;
+          }
+          if (!username.match(/^[a-zA-Z0-9_]+$/)) {
+            showAlert('Username can only contain letters, digits, and underscores.', 'account');
+            return;
+          }
+        }
+        
+        // Validate email format and length
+        if (email) {
+          if (email.length > 254) {
+            showAlert('Email address is too long.', 'account');
+            return;
+          }
+          if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            showAlert('Please enter a valid email address.', 'account');
+            return;
+          }
+        }
+        
+        // Validate password if provided
+        if (newPassword) {
+          // Check if passwords match
+          if (newPassword !== confirmPassword) {
+            showAlert('The two password fields didn\'t match.', 'password');
+            return;
+          }
+          
+          // Check password length
+          if (newPassword.length < 8) {
+            showAlert('Password must be at least 8 characters long.', 'password');
+            return;
+          }
+          
+          // Check password complexity: letters, numbers, and special characters
+          const hasLetter = /[a-zA-Z]/.test(newPassword);
+          const hasDigit = /\d/.test(newPassword);
+          const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword);
+          
+          if (!hasLetter || !hasDigit || !hasSpecial) {
+            showAlert('Password must contain letters, numbers, and special characters.', 'password');
+            return;
+          }
+        }
+        
+        // Detect changes
+        const changes = [];
+        
+        // Check account information changes
+        if (formData.get('first_name') !== originalValues.first_name) {
+          changes.push({
+            label: 'First Name',
+            old: originalValues.first_name || '(empty)',
+            new: formData.get('first_name') || '(empty)'
+          });
+        }
+        
+        if (formData.get('last_name') !== originalValues.last_name) {
+          changes.push({
+            label: 'Last Name',
+            old: originalValues.last_name || '(empty)',
+            new: formData.get('last_name') || '(empty)'
+          });
+        }
+        
+        if (formData.get('email') !== originalValues.email) {
+          changes.push({
+            label: 'Email',
+            old: originalValues.email,
+            new: formData.get('email')
+          });
+        }
+        
+        if (formData.get('username') !== originalValues.username) {
+          changes.push({
+            label: 'Username',
+            old: originalValues.username,
+            new: formData.get('username')
+          });
+        }
+        
+        // Check password change
+        if (newPassword) {
+          changes.push({
+            label: 'Password',
+            old: '••••••••',
+            new: '••••••••'
+          });
+        }
+        
+        // Display changes in modal
+        if (changes.length > 0) {
+          let changesHtml = '';
+          changes.forEach(change => {
+            changesHtml += `
+              <div class="change-item">
+                <span class="change-label">New ${change.label}: ${change.new}</span>
+              </div>
+            `;
+          });
+          changesList.innerHTML = changesHtml;
+          confirmSaveBtn.style.display = 'inline-block';
+          confirmChangesModal.show();
+        } else {
+          // No changes detected
+          changesList.innerHTML = '<p class="text-muted mb-0"><i class="bi bi-info-circle me-2"></i>No changes detected.</p>';
+          confirmSaveBtn.style.display = 'none';
+          confirmChangesModal.show();
+        }
+      });
+
+      confirmSaveBtn.addEventListener('click', function() {
+        confirmChangesModal.hide();
+        // Submit the form without triggering the event listener again
+        form.removeEventListener('submit', arguments.callee);
+        form.submit();
+      });
+
+      // Handle Teacher Profile Form
+      const teacherForm = document.querySelector('#teacher-section form');
+      
+      // Store original teacher profile values
+      const originalTeacherValues = {
+        title: '{% if teacher_profile %}{{ teacher_profile.title|escapejs }}{% endif %}',
+        experience: '{% if teacher_profile %}{{ teacher_profile.experience|escapejs }}{% endif %}',
+        teaching_years: '{% if teacher_profile %}{{ teacher_profile.teaching_years|default:"" }}{% endif %}',
+        lesson_price: '{% if teacher_profile %}{{ teacher_profile.lesson_price }}{% endif %}',
+        course_price: '{% if teacher_profile %}{{ teacher_profile.course_price }}{% endif %}',
+        avatar: '{% if teacher_profile and teacher_profile.avatar %}{{ teacher_profile.avatar.name|escapejs }}{% endif %}'
+      };
+
+      // Function to show teacher alert messages
+      function showTeacherAlert(message, field = '') {
+        let alertContainer = document.querySelector('#teacher-section');
+        
+        // Remove existing error messages
+        const existingErrors = alertContainer.querySelectorAll('.errorlist');
+        existingErrors.forEach(error => error.remove());
+        
+        // Create error message HTML
+        const errorHtml = `
+          <ul class="errorlist">
+            <li>${message}</li>
+          </ul>
+        `;
+        
+        // Insert error after the teacher profile title
+        const teacherTitle = alertContainer.querySelector('h3');
+        teacherTitle.insertAdjacentHTML('afterend', errorHtml);
+      }
+
+      if (teacherForm) {
+        teacherForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const formData = new FormData(teacherForm);
+          const title = formData.get('title');
+          const experience = formData.get('experience');
+          const teachingYears = formData.get('teaching_years');
+          const lessonPrice = formData.get('lesson_price');
+          const coursePrice = formData.get('course_price');
+          const avatar = formData.get('avatar');
+          
+          // Validate title
+          if (!title || title.trim() === '') {
+            showTeacherAlert('Professional title is required.');
+            return;
+          }
+          if (title.length > 50) {
+            showTeacherAlert('Professional title must be 50 characters or fewer.');
+            return;
+          }
+          
+          // Validate experience
+          if (!experience || experience.trim() === '') {
+            showTeacherAlert('Professional teaching experience description is required.');
+            return;
+          }
+          if (experience.length > 500) {
+            showTeacherAlert('Experience description must be 500 characters or fewer.');
+            return;
+          }
+          
+          // Validate teaching years (optional field)
+          if (teachingYears && (teachingYears < 0 || teachingYears > 99)) {
+            showTeacherAlert('Teaching years must be between 0 and 99.');
+            return;
+          }
+          
+          // Validate lesson price
+          if (!lessonPrice || lessonPrice === '') {
+            showTeacherAlert('Lesson price is required.');
+            return;
+          }
+          if (lessonPrice < 0 || lessonPrice > 999999) {
+            showTeacherAlert('Lesson price must be between 0 and 999,999.');
+            return;
+          }
+          
+          // Validate course price
+          if (!coursePrice || coursePrice === '') {
+            showTeacherAlert('Course price is required.');
+            return;
+          }
+          if (coursePrice < 0 || coursePrice > 9999999) {
+            showTeacherAlert('Course price must be between 0 and 9,999,999.');
+            return;
+          }
+          
+          // Validate avatar (required for new profiles, optional for updates)
+          const hasExistingProfile = originalTeacherValues.avatar !== '';
+          if (!hasExistingProfile && (!avatar || avatar.name === '')) {
+            showTeacherAlert('Profile picture is required.');
+            return;
+          }
+          
+          // Detect changes
+          const teacherChanges = [];
+          
+          if (title !== originalTeacherValues.title) {
+            teacherChanges.push({
+              label: 'Professional Title',
+              new: title
+            });
+          }
+          
+          if (experience !== originalTeacherValues.experience) {
+            teacherChanges.push({
+              label: 'Teaching Experience',
+              new: experience.length > 50 ? experience.substring(0, 50) + '...' : experience
+            });
+          }
+          
+          if (teachingYears !== originalTeacherValues.teaching_years) {
+            teacherChanges.push({
+              label: 'Years of Experience',
+              new: teachingYears || 'Not specified'
+            });
+          }
+          
+          if (lessonPrice !== originalTeacherValues.lesson_price) {
+            teacherChanges.push({
+              label: 'Lesson Price',
+              new: '$' + lessonPrice
+            });
+          }
+          
+          if (coursePrice !== originalTeacherValues.course_price) {
+            teacherChanges.push({
+              label: 'Course Price',
+              new: '$' + coursePrice
+            });
+          }
+          
+          if (avatar && avatar.name !== '' && avatar.name !== originalTeacherValues.avatar) {
+            teacherChanges.push({
+              label: 'Profile Picture',
+              new: avatar.name
+            });
+          }
+          
+          // Display changes in modal
+          if (teacherChanges.length > 0) {
+            let changesHtml = '';
+            teacherChanges.forEach(change => {
+              changesHtml += `
+                <div class="change-item">
+                  <span class="change-label">New ${change.label}: ${change.new}</span>
+                </div>
+              `;
+            });
+            changesList.innerHTML = changesHtml;
+            confirmSaveBtn.style.display = 'inline-block';
+            
+            // Update the confirm button to handle teacher form submission
+            confirmSaveBtn.onclick = function() {
+              confirmChangesModal.hide();
+              teacherForm.removeEventListener('submit', arguments.callee);
+              teacherForm.submit();
+            };
+            
+            confirmChangesModal.show();
+          } else {
+            // No changes detected
+            changesList.innerHTML = '<p class="text-muted mb-0"><i class="bi bi-info-circle me-2"></i>No changes detected.</p>';
+            confirmSaveBtn.style.display = 'none';
+            confirmChangesModal.show();
+          }
+        });
+      }
+
       // Handle desktop navigation
       const navLinks = document.querySelectorAll('.profile-nav-link');
       const sections = document.querySelectorAll('.profile-section');

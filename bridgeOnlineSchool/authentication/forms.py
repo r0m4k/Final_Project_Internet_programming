@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from landing.models import Teacher
 import re
 
 class SignUpForm(UserCreationForm):
@@ -127,3 +128,83 @@ class ForgotPasswordForm(forms.Form):
         if not User.objects.filter(email=email).exists():
             raise forms.ValidationError("No user found with this email address.")
         return email
+
+class TeacherProfileForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ['title', 'experience', 'teaching_years', 'avatar', 'lesson_price', 'course_price']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., World Champion, Respectful Educator, European Champion',
+                'maxlength': 50
+            }),
+            'experience': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Describe your teaching experience and qualifications...',
+                'rows': 4,
+                'maxlength': 500
+            }),
+            'teaching_years': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Years of teaching experience',
+                'min': 0,
+                'max': 99
+            }),
+            'avatar': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            }),
+            'lesson_price': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Price per lesson (USD)',
+                'min': 0,
+                'max': 999999,
+                'step': 1
+            }),
+            'course_price': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Price per course (USD)',
+                'min': 0,
+                'max': 9999999,
+                'step': 1
+            })
+        }
+    
+    def clean_title(self):
+        title = self.cleaned_data.get('title')
+        if not title:
+            raise forms.ValidationError("Title is required.")
+        if len(title) > 50:
+            raise forms.ValidationError("Title must be 50 characters or fewer.")
+        return title
+    
+    def clean_experience(self):
+        experience = self.cleaned_data.get('experience')
+        if not experience:
+            raise forms.ValidationError("Experience description is required.")
+        if len(experience) > 500:
+            raise forms.ValidationError("Experience must be 500 characters or fewer.")
+        return experience
+    
+    def clean_teaching_years(self):
+        teaching_years = self.cleaned_data.get('teaching_years')
+        if teaching_years is not None and (teaching_years < 0 or teaching_years > 99):
+            raise forms.ValidationError("Teaching years must be between 0 and 99.")
+        return teaching_years
+    
+    def clean_lesson_price(self):
+        lesson_price = self.cleaned_data.get('lesson_price')
+        if lesson_price is None:
+            raise forms.ValidationError("Lesson price is required.")
+        if lesson_price < 0 or lesson_price > 999999:
+            raise forms.ValidationError("Lesson price must be between 0 and 999,999.")
+        return lesson_price
+    
+    def clean_course_price(self):
+        course_price = self.cleaned_data.get('course_price')
+        if course_price is None:
+            raise forms.ValidationError("Course price is required.")
+        if course_price < 0 or course_price > 9999999:
+            raise forms.ValidationError("Course price must be between 0 and 9,999,999.")
+        return course_price

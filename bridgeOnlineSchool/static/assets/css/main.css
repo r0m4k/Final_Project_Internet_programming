@@ -3146,6 +3146,10 @@ section,
   display: none;
 }
 
+#confirmChangesModalLabel {
+  color: white;
+}
+
 
 
 

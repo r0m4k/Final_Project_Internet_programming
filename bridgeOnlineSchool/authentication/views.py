@@ -1,16 +1,17 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .forms import SignUpForm
+from .forms import SignUpForm, ForgotPasswordForm, TeacherProfileForm
 from django.core.mail import send_mail
 from django.conf import settings
-from .forms import SignUpForm, ForgotPasswordForm
+from landing.models import Teacher
 import random
 import string
+import re
 
 
 # Create your views here.
@@ -95,10 +96,105 @@ Bridge Online School Team
 
 
 def profile_view(request):
-    """Profile page view with settings and messages sections"""
+    """Profile page view with settings, messages, and teacher profile sections"""
     if not request.user.is_authenticated:
         return redirect('authentication:login')
-    
+
+    # Get or create teacher profile if it doesn't exist
+    try:
+        teacher_profile = request.user.teacher_profile
+    except Teacher.DoesNotExist:
+        teacher_profile = None
+
+    if request.method == 'POST':
+        user = request.user
+        changes_made = False
+
+        # Check which form was submitted
+        if 'teacher_profile_submit' in request.POST:
+            # Handle teacher profile form
+            if teacher_profile:
+                teacher_form = TeacherProfileForm(request.POST, request.FILES, instance=teacher_profile)
+            else:
+                teacher_form = TeacherProfileForm(request.POST, request.FILES)
+            
+            if teacher_form.is_valid():
+                teacher = teacher_form.save(commit=False)
+                teacher.user = user
+                teacher.first_name = user.first_name
+                teacher.last_name = user.last_name
+                teacher.is_active = True  # Set to True by default as requested
+                teacher.save()
+                messages.success(request, 'Teacher profile updated successfully!')
+                return redirect('authentication:profile?stay_teacher=1')
+            else:
+                # Add form errors to messages
+                for field, errors in teacher_form.errors.items():
+                    for error in errors:
+                        messages.error(request, f"{field.replace('_', ' ').title()}: {error}")
+                return redirect('authentication:profile?stay_teacher=1')
+        else:
+            # Handle account settings form
+            # --- Account Info Update ---
+            if user.first_name != request.POST.get('first_name'):
+                user.first_name = request.POST.get('first_name')
+                changes_made = True
+            
+            if user.last_name != request.POST.get('last_name'):
+                user.last_name = request.POST.get('last_name')
+                changes_made = True
+
+            new_email = request.POST.get('email')
+            if new_email and new_email != user.email:
+                if User.objects.filter(email=new_email).exclude(pk=user.pk).exists():
+                    messages.error(request, 'This email is already in use.')
+                else:
+                    user.email = new_email
+                    changes_made = True
+
+            new_username = request.POST.get('username')
+            if new_username and new_username != user.username:
+                if User.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+                    messages.error(request, 'This username is already taken.')
+                else:
+                    user.username = new_username
+                    changes_made = True
+
+        # --- Password Change ---
+        new_password = request.POST.get('new_password')
+        if new_password:
+            confirm_password = request.POST.get('confirm_password')
+
+            # Password complexity regex: min 8 chars, 1 letter, 1 number, 1 special char
+            password_pattern = re.compile(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$')
+
+            if new_password != confirm_password:
+                messages.error(request, 'The two password fields didn’t match.')
+            elif not password_pattern.match(new_password):
+                messages.error(request, 'Password must be at least 8 characters long and contain at least one letter, one number, and one special character.')
+            else:
+                user.set_password(new_password)
+                update_session_auth_hash(request, user)  # Important!
+                changes_made = True
+
+            if changes_made:
+                user.save()
+                # Update teacher profile names if they exist
+                if teacher_profile:
+                    teacher_profile.first_name = user.first_name
+                    teacher_profile.last_name = user.last_name
+                    teacher_profile.save()
+
+            return redirect('authentication:profile')
+
+    # Create teacher form for rendering
+    if teacher_profile:
+        teacher_form = TeacherProfileForm(instance=teacher_profile)
+    else:
+        teacher_form = TeacherProfileForm()
+
     return render(request, 'authentication/profile.html', {
-        'user': request.user
+        'user': request.user,
+        'teacher_profile': teacher_profile,
+        'teacher_form': teacher_form
     })
