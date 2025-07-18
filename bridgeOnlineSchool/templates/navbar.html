@@ -1,15 +1,16 @@
 <header id="header" class="header d-flex align-items-center fixed-top margin-bottom-200">
-    <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
-        <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+    <div class="container-fluid position-relative d-flex align-items-center">
+        <!-- Logo Section -->
+        <a href="index.html" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="assets/img/logo.webp" alt=""> -->
         <h1 class="sitename">BOS.</h1>
         </a>
 
-        <!-- Desktop Navigation -->
-        <nav id="navmenu" class="navmenu">
+        <!-- Desktop Navigation (Absolutely Centered) -->
+        <nav id="navmenu" class="navmenu position-absolute top-50 start-50 translate-middle">
             <ul>
-                <li><a href="{% url 'landing:home' %}" class="active">Home</a></li>
+                <li><a href="{% url 'landing:home' %}" class="{% if request.resolver_match.namespace == 'landing' and request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
                 <li><a href="aboutUs.html">About Us</a></li>
                 <li><a href="#pricing">Materials</a></li>
                 <li><a href="#contact">Contact</a></li>
@@ -17,7 +18,7 @@
         </nav>
 
         <!-- Desktop User Section -->
-        <div class="desktop-user-section">
+        <div class="desktop-user-section ms-auto">
             {% if user.is_authenticated %}
                 <a href="{% url 'authentication:profile' %}" class="user-section">
                     <i class="bi bi-file-person" id="profile-icon"></i>
@@ -30,7 +31,7 @@
         </div>
 
         <!-- Mobile Hamburger Menu -->
-        <i class="mobile-nav-toggle bi bi-list"></i>
+        <i class="mobile-nav-toggle bi bi-list ms-auto"></i>
     </div>
 </header>
 
@@ -39,7 +40,7 @@
     <i class="mobile-nav-close bi bi-x"></i>
     
     <ul class="mobile-nav-list">
-        <li><a href="{% url 'landing:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"><span>Home</span></a></li>
+        <li><a href="{% url 'landing:home' %}" class="{% if request.resolver_match.namespace == 'landing' and request.resolver_match.url_name == 'home' %}active{% endif %}"><span>Home</span></a></li>
         <li><a href="aboutUs.html"><span>About Us</span></a></li>
         <li><a href="#pricing"><span>Materials</span></a></li>
         <li><a href="#contact"><span>Contact</span></a></li>

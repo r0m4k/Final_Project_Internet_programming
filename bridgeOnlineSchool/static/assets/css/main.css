@@ -149,15 +149,39 @@ h6 {
   flex: 0 0 auto; /* Don't grow or shrink */
 }
 
-.header .navmenu {
-  flex: 1; /* Take up available space */
+.header .container-fluid {
   display: flex;
-  justify-content: center; /* Center the navigation */
+  align-items: center;
+  justify-content: space-between;
 }
 
-.header .user-section,
-.header .btn-getstarted {
-  flex: 0 0 auto; /* Don't grow or shrink */
+.header .logo {
+  flex: 0 0 auto;
+}
+
+.header .navmenu {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Absolutely positioned navigation for perfect centering */
+.header .navmenu.position-absolute {
+  flex: none;
+  white-space: nowrap;
+  z-index: 9999;
+}
+
+.header .desktop-user-section {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header .mobile-nav-toggle {
+  flex: 0 0 auto;
 }
 
 /*--------------------------------------------------------------
@@ -859,7 +883,24 @@ section,
   overflow: clip;
 }
 
-@media (max-width: 1199px) {
+@media (max-width: 749px) {
+  /* Mobile responsive styles for absolutely positioned navigation */
+  .header .navmenu.position-absolute {
+    display: none !important;
+  }
+  
+  .header .mobile-nav-toggle {
+    display: block !important;
+  }
+}
+
+@media (min-width: 750px) {
+  .header .mobile-nav-toggle {
+    display: none !important;
+  }
+}
+
+@media (max-width: 749px) {
 
   section,
   .section {
@@ -872,7 +913,7 @@ section,
 --------------------------------------------------------------*/
 .section-title {
   text-align: center;
-  padding-bottom: 60px;
+  padding-bottom: 20px;
   position: relative;
 }
 
@@ -1999,23 +2040,6 @@ section,
   background-color: var(--accent-color);
 }
 
-/* Team Card Playing Card Dimensions (2.5:3.5 ratio) */
-.team .team-card {
-  position: relative;
-  aspect-ratio: 2.5 / 3.5;
-  height: auto;
-  width: 100%;
-  max-width: 280px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: var(--surface-color);
-}
-
 .team .team-image {
   position: relative;
   flex: 1;
@@ -2514,7 +2538,7 @@ section,
 }
 
 .pricing .pricing-item .pricing-footer .btn-primary {
-  background-color: var(--accent-color);
+     background-color: var(--accent-color);
   border-color: var(--accent-color);
   color: var(--contrast-color);
 }
@@ -2529,7 +2553,8 @@ section,
 .pricing .pricing-item .pricing-footer .btn-outline {
   background-color: transparent;
   border: 2px solid var(--accent-color);
-  color: var(--accent-color);
+        
+        
 }
 
 .pricing .pricing-item .pricing-footer .btn-outline:hover {
@@ -3148,6 +3173,721 @@ section,
 
 #confirmChangesModalLabel {
   color: white;
+}
+
+/* Admin Actions Styling */
+.admin-actions .btn {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.admin-actions .btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.admin-actions .btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+  transform: translateY(-2px);
+}
+
+.admin-actions .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.admin-actions .btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+  transform: translateY(-2px);
+}
+
+.admin-actions .btn:active {
+  transform: translateY(0);
+}
+
+/* Admin Actions with centered Book a lesson button */
+.book-action-with-admin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.admin-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: white;
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
+}
+
+.admin-btn:hover {
+  transform: scale(1.1);
+  text-decoration: none;
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.delete-btn {
+  background-color: white;
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
+}
+
+.delete-btn:hover {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.approve-btn {
+  background-color: white;
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
+}
+
+.approve-btn:hover {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.book-action-with-admin .btn-getstarted {
+  flex: 1;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Deactivate button for active teachers */
+.deactivate-btn-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+}
+
+.deactivate-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  color: var(--accent-color);
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  border: 2px solid var(--accent-color);
+}
+
+.deactivate-btn:hover {
+  background-color: var(--accent-color);
+  color: white;
+  transform: scale(1.1);
+  text-decoration: none;
+}
+
+/* Mobile responsive styles for admin buttons */
+@media (max-width: 1200px) {
+  .admin-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 15px;
+  }
+  
+  .deactivate-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+  
+  .deactivate-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+  
+  .deactivate-btn-container {
+    top: 8px;
+    right: 8px;
+  }
+  
+  .book-action-with-admin {
+    gap: 8px;
+  }
+  
+  .book-action-with-admin .btn-getstarted {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .admin-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+  
+  .deactivate-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+  
+  .deactivate-btn-container {
+    top: 6px;
+    right: 6px;
+  }
+  
+  .book-action-with-admin {
+    gap: 6px;
+  }
+  
+  .book-action-with-admin .btn-getstarted {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+  
+  .deactivate-btn {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
+  
+  .deactivate-btn-container {
+    top: 5px;
+    right: 5px;
+  }
+  
+  .book-action-with-admin {
+    gap: 5px;
+  }
+  
+  .book-action-with-admin .btn-getstarted {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+}
+
+/*--------------------------------------------------------------
+# Filter Section Styling
+--------------------------------------------------------------*/
+.filter-section {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.teacher-filters .form-label {
+  font-weight: 600;
+  color: var(--heading-color);
+  margin-bottom: 5px;
+}
+
+.teacher-filters .form-control,
+.teacher-filters .form-select {
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.teacher-filters .form-control:focus,
+.teacher-filters .form-select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 0.2rem rgba(255, 23, 23, 0.25);
+}
+
+.filter-buttons .btn {
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.filter-buttons .btn-primary {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.filter-buttons .btn-primary:hover {
+  background-color: color-mix(in srgb, var(--accent-color), transparent 15%);
+  border-color: color-mix(in srgb, var(--accent-color), transparent 15%);
+}
+
+/*--------------------------------------------------------------
+# Minimalistic Filter Section
+--------------------------------------------------------------*/
+.filter-section-minimal {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 12px 16px;
+  border-radius: 50px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: inline-block;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.filter-item {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.form-control-minimal,
+.form-select-minimal {
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+  min-width: 140px;
+  color: var(--default-color);
+}
+
+.form-control-minimal:focus,
+.form-select-minimal:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(255, 23, 23, 0.1);
+  outline: none;
+  background-color: #fff;
+}
+
+.form-control-minimal::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+.btn-filter,
+.btn-clear {
+  border: none;
+  border-radius: 25px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  min-width: 70px;
+}
+
+.btn-filter {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.btn-clear {
+  background-color: transparent;
+  color: var(--default-color);
+  border: 1px solid #e0e0e0;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .filter-section-minimal {
+    padding: 8px 10px;
+    border-radius: 20px;
+    max-width: 100%;
+  }
+  
+  .filter-row {
+    flex-direction: row;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .filter-item {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  /* First three filter items take full width of first row */
+  .filter-item:nth-child(1),
+  .filter-item:nth-child(2),
+  .filter-item:nth-child(3) {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  /* Last filter item (buttons) takes full width of second row */
+  .filter-item:nth-child(4) {
+    flex: 1 0 100%;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  
+  .form-control-minimal,
+  .form-select-minimal {
+    width: 100%;
+    min-width: 0;
+    padding: 6px 8px;
+    font-size: 10px;
+    border-radius: 15px;
+  }
+  
+  .btn-filter,
+  .btn-clear {
+    flex: 1;
+    max-width: 80px;
+    padding: 6px 8px;
+    font-size: 9px;
+    min-width: 0;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+  .filter-section-minimal {
+    padding: 6px 8px;
+  }
+  
+  .filter-row {
+    gap: 2px;
+  }
+  
+  .filter-item:nth-child(4) {
+    margin-top: 4px;
+    gap: 2px;
+  }
+  
+  .form-control-minimal,
+  .form-select-minimal {
+    padding: 4px 6px;
+    font-size: 9px;
+  }
+  
+  .btn-filter,
+  .btn-clear {
+    padding: 4px 6px;
+    font-size: 8px;
+    max-width: 70px;
+  }
+}
+
+/*--------------------------------------------------------------
+# Pending Teachers Section Styling
+--------------------------------------------------------------*/
+.pending-teachers-section {
+  background-color: #f0f4f8; /* Light blue-grey background */
+  padding: 60px 0;
+  border-radius: 20px;
+  margin-top: 40px;
+}
+
+.pending-teachers-title div {
+  color: #6c757d !important; /* Light grey color for the header */
+}
+
+.pending-teacher-card {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid #e3eaf0;
+  box-shadow: 0 4px 15px rgba(96, 108, 126, 0.1);
+  transition: all 0.3s ease;
+}
+
+.pending-teacher-card:hover {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 6px 20px rgba(96, 108, 126, 0.15);
+  transform: translateY(-2px);
+}
+
+.pending-teacher-card .team-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.pending-teacher-card .team-image::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(240, 244, 248, 0.1), rgba(108, 117, 125, 0.1));
+  z-index: 1;
+  pointer-events: none;
+}
+
+.pending-teacher-card .price-tag {
+  background-color: #6c757d;
+  color: white;
+}
+
+/*--------------------------------------------------------------
+# No Teachers Found Message
+--------------------------------------------------------------*/
+.no-teachers-found {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.no-teachers-found p {
+  color: var(--default-color);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/*--------------------------------------------------------------
+# Teacher Profile Page Styles
+--------------------------------------------------------------*/
+.teacher-profile .card {
+  border: none;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.teacher-profile .teacher-avatar img {
+  border: 5px solid #fff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.teacher-profile .teaching-years .badge {
+  border-radius: 20px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.teacher-profile .teacher-actions .btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.teacher-profile .teacher-actions .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.teacher-profile .teacher-actions .badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.teacher-profile .reviews-list .review-item {
+  transition: all 0.3s ease;
+}
+
+.teacher-profile .reviews-list .review-item:hover {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 15px;
+  margin: -15px;
+}
+
+.teacher-profile .review-avatar {
+  flex-shrink: 0;
+}
+
+.teacher-profile .rating-stars i {
+  font-size: 1rem;
+  margin-right: 2px;
+}
+
+.teacher-profile .rating-input {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  margin: 10px 0 !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+}
+
+.teacher-profile .rating-input input {
+  display: none !important;
+}
+
+.teacher-profile .rating-input .star-button {
+  cursor: pointer !important;
+  font-size: 1.8rem !important;
+  color: #dee2e6 !important;
+  border: none !important;
+  background: none !important;
+  padding: 5px !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  transition: all 0.3s ease !important;
+  user-select: none !important;
+  flex-shrink: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.teacher-profile .rating-input .star-button:hover {
+  color: #ffc107 !important;
+  transform: scale(1.1) !important;
+}
+
+.teacher-profile .rating-input .star-button.active {
+  color: #ffc107 !important;
+}
+
+.teacher-profile .rating-input .star-button.filled {
+  color: #ffc107 !important;
+}
+
+.teacher-profile .rating-input .star-button i {
+  font-size: 1.5rem !important;
+  pointer-events: none !important;
+}
+
+.teacher-profile .modal-content {
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.teacher-profile .modal-header {
+  background: linear-gradient(135deg, var(--accent-color), var(--heading-color));
+  color: white;
+  border-bottom: none;
+  border-radius: 15px 15px 0 0;
+}
+
+.teacher-profile .modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.teacher-profile .course-includes ul li {
+  padding: 5px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.teacher-profile .course-includes ul li:last-child {
+  border-bottom: none;
+}
+
+/*--------------------------------------------------------------
+# Minimal Button Styles
+--------------------------------------------------------------*/
+.btn-minimal {
+  background-color: transparent;
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-minimal:hover {
+  background-color: var(--accent-color);
+  color: var(--contrast-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 23, 23, 0.3);
+}
+
+.btn-minimal:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 23, 23, 0.2);
+}
+
+.btn-minimal .price-tag {
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.btn-minimal:hover .price-tag {
+  opacity: 1;
+}
+
+.btn-minimal-grey {
+  background-color: transparent;
+  border: 2px solid #6c757d;
+  color: #6c757d;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-minimal-grey:hover {
+  background-color: #6c757d;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.btn-minimal-grey:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.2);
+}
+
+@media (max-width: 768px) {
+  .btn-minimal-grey {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
 }
 
 

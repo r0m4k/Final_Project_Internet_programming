@@ -110,8 +110,20 @@ def profile_view(request):
         user = request.user
         changes_made = False
 
+        # Debug: Print POST data to see what's being sent
+        print("POST data keys:", list(request.POST.keys()))
+        print("POST data:", dict(request.POST))
+
         # Check which form was submitted
-        if 'teacher_profile_submit' in request.POST:
+        # Method 1: Check for teacher_profile_submit button
+        is_teacher_form = 'teacher_profile_submit' in request.POST
+        
+        # Method 2: Check for teacher-specific fields as fallback
+        if not is_teacher_form:
+            teacher_fields = ['title', 'experience', 'lesson_price', 'course_price']
+            is_teacher_form = any(field in request.POST for field in teacher_fields)
+        
+        if is_teacher_form:
             # Handle teacher profile form
             if teacher_profile:
                 teacher_form = TeacherProfileForm(request.POST, request.FILES, instance=teacher_profile)
@@ -119,23 +131,25 @@ def profile_view(request):
                 teacher_form = TeacherProfileForm(request.POST, request.FILES)
             
             if teacher_form.is_valid():
+                print("Teacher profile form is valid")
                 teacher = teacher_form.save(commit=False)
                 teacher.user = user
                 teacher.first_name = user.first_name
                 teacher.last_name = user.last_name
-                teacher.is_active = True  # Set to True by default as requested
+                teacher.is_active = False  # Set to True by default as requested
                 teacher.save()
-                messages.success(request, 'Teacher profile updated successfully!')
-                return redirect('authentication:profile?stay_teacher=1')
+                return redirect('authentication:profile')
             else:
+                print("Teacher profile form is invalid:", teacher_form.errors)
                 # Add form errors to messages
                 for field, errors in teacher_form.errors.items():
                     for error in errors:
                         messages.error(request, f"{field.replace('_', ' ').title()}: {error}")
-                return redirect('authentication:profile?stay_teacher=1')
+                return redirect('authentication:profile')
         else:
             # Handle account settings form
             # --- Account Info Update ---
+            print("Handling account settings form")
             if user.first_name != request.POST.get('first_name'):
                 user.first_name = request.POST.get('first_name')
                 changes_made = True
@@ -160,22 +174,22 @@ def profile_view(request):
                     user.username = new_username
                     changes_made = True
 
-        # --- Password Change ---
-        new_password = request.POST.get('new_password')
-        if new_password:
-            confirm_password = request.POST.get('confirm_password')
+            # --- Password Change ---
+            new_password = request.POST.get('new_password')
+            if new_password:
+                confirm_password = request.POST.get('confirm_password')
 
-            # Password complexity regex: min 8 chars, 1 letter, 1 number, 1 special char
-            password_pattern = re.compile(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$')
+                # Password complexity regex: min 8 chars, 1 letter, 1 number, 1 special char
+                password_pattern = re.compile(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$')
 
-            if new_password != confirm_password:
-                messages.error(request, 'The two password fields didn’t match.')
-            elif not password_pattern.match(new_password):
-                messages.error(request, 'Password must be at least 8 characters long and contain at least one letter, one number, and one special character.')
-            else:
-                user.set_password(new_password)
-                update_session_auth_hash(request, user)  # Important!
-                changes_made = True
+                if new_password != confirm_password:
+                    messages.error(request, 'The two password fields did not match.')
+                elif not password_pattern.match(new_password):
+                    messages.error(request, 'Password must be at least 8 characters long and contain at least one letter, one number, and one special character.')
+                else:
+                    user.set_password(new_password)
+                    update_session_auth_hash(request, user)  # Important!
+                    changes_made = True
 
             if changes_made:
                 user.save()

@@ -10,7 +10,7 @@
           <div class="auth-box">
             <div class="row g-0">
               <!-- Sidebar with navigation -->
-              <div class="col-lg-1">
+              <div class="col-auto">
                 <div class="profile-sidebar h-100">
                   <div class="profile-header mb-4">
                     <div class="profile-avatar">
@@ -41,7 +41,7 @@
               </div>
               
               <!-- Main content area -->
-              <div class="col-lg-11">
+              <div class="col">
                 <div class="profile-content">
                   <!-- Settings Section -->
                   <div id="settings-section" class="profile-section active">
@@ -105,12 +105,21 @@
                     <h3 class="mb-4">Teacher Profile</h3>
                     
                     {% if teacher_profile %}
-                      <div class="alert alert-success d-flex align-items-center mb-4">
-                        <i class="bi bi-check-circle-fill me-2"></i>
+                      {% if teacher_profile.is_active %}
+                        <div class="alert alert-success d-flex align-items-center mb-4">
+                          <i class="bi bi-check-circle-fill me-2"></i>
+                          <div>
+                            <strong>Teacher Profile Active!</strong> Your teacher profile is currently active and visible to students.
+                          </div>
+                        </div>
+                      {% else %}
+                        <div class="alert alert-warning d-flex align-items-center">
+                          <i class="bi bi-exclamation-triangle-fill me-2"></i>
                         <div>
-                          <strong>Teacher Profile Active!</strong> Your teacher profile is currently active and visible to students.
+                          <strong>Teacher Profile is Under Review!</strong> Wait for our administrators decision.
                         </div>
                       </div>
+                      {% endif %}
                     {% else %}
                       <div class="alert alert-info d-flex align-items-center mb-4">
                         <i class="bi bi-info-circle-fill me-2"></i>
@@ -208,15 +217,6 @@
                           </div>
                         </div>
                       </div>
-
-                      <div class="mb-4">
-                        <div class="alert alert-warning d-flex align-items-center">
-                          <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                          <div>
-                            <strong>Note:</strong> Your teacher profile will be automatically set as active and visible to students once saved.
-                          </div>
-                        </div>
-                      </div>
                       
                       <button class="btn-getstarted rounded-pill" type="submit" name="teacher_profile_submit" value="1">
                         {% if teacher_profile %}
@@ -277,29 +277,6 @@
     </div>
   </section>
 
-  <!-- Mobile Navigation for smaller screens -->
-  <div class="mobile-profile-nav d-lg-none">
-    <div class="container">
-      <div class="row">
-        <div class="col-4">
-          <button class="btn btn-outline-secondary w-100 mobile-nav-btn active" data-section="settings">
-            <i class="bi bi-gear me-1"></i>Settings
-          </button>
-        </div>
-        <div class="col-4">
-          <button class="btn btn-outline-secondary w-100 mobile-nav-btn" data-section="teacher">
-            <i class="bi bi-person-video3 me-1"></i>Teacher
-          </button>
-        </div>
-        <div class="col-4">
-          <button class="btn btn-outline-secondary w-100 mobile-nav-btn" data-section="messages">
-            <i class="bi bi-envelope me-1"></i>Messages
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="modal fade" id="confirm-changes-modal" tabindex="-1" aria-labelledby="confirmChangesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg">
@@ -336,10 +313,13 @@
       color: white;
       padding: 20px 10px;
       border-radius: 10px 0 0 10px;
-      width: 80px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 500px;
+      width: 80px;
+      max-width: 80px;
+      flex-shrink: 0;
     }
     
     .profile-header {
@@ -347,6 +327,7 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 15px;
       margin-bottom: 20px;
+      width: 100%;
     }
     
     .profile-avatar {
@@ -357,6 +338,7 @@
       justify-content: center;
       font-size: 1.5rem;
       color: white;
+      margin: 0 auto;
     }
     
     .profile-nav {
@@ -367,12 +349,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: 12px 8px;
       color: rgba(255, 255, 255, 0.8);
       text-decoration: none;
       border-radius: 8px;
       transition: all 0.3s;
       font-size: 1.2rem;
+      text-align: center;
+      min-height: 48px;
     }
     
     .profile-nav-link:hover,
@@ -419,24 +403,101 @@
       margin-right: 15px;
     }
     
-    .mobile-profile-nav {
-      background: white;
-      padding: 15px 0;
-      border-top: 1px solid #eee;
-      position: sticky;
-      top: 70px;
-      z-index: 100;
-    }
-    
-    .mobile-nav-btn.active {
-      background: #942828;
-      color: white;
-      border-color: #942828;
+    /* Responsive Design */
+    @media (max-width: 1199px) {
+      .profile-sidebar {
+        padding: 15px 8px;
+        width: 70px;
+        max-width: 70px;
+      }
+      
+      .profile-nav-link {
+        padding: 10px 6px;
+        font-size: 1.1rem;
+        min-height: 44px;
+      }
+      
+      .profile-avatar {
+        width: 35px;
+        height: 35px;
+        font-size: 1.3rem;
+      }
     }
     
     @media (max-width: 991px) {
       .profile-sidebar {
-        display: none;
+        padding: 15px 5px;
+        width: 60px;
+        max-width: 60px;
+      }
+      
+      .profile-nav-link {
+        padding: 8px 4px;
+        font-size: 1rem;
+        min-height: 42px;
+      }
+      
+      .profile-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 1.2rem;
+      }
+      
+      .profile-content {
+        padding: 20px 15px;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .profile-sidebar {
+        padding: 12px 3px;
+        border-radius: 8px 0 0 8px;
+        width: 55px;
+        max-width: 55px;
+      }
+      
+      .profile-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 1.1rem;
+      }
+      
+      .profile-nav-link {
+        padding: 6px 2px;
+        font-size: 0.9rem;
+        min-height: 40px;
+      }
+      
+      .profile-content {
+        padding: 15px 10px;
+      }
+    }
+    
+    @media (max-width: 575px) {
+      .profile-sidebar {
+        padding: 10px 2px;
+        width: 50px;
+        max-width: 50px;
+      }
+      
+      .profile-avatar {
+        width: 25px;
+        height: 25px;
+        font-size: 1rem;
+      }
+      
+      .profile-nav-link {
+        padding: 5px 1px;
+        font-size: 0.8rem;
+        min-height: 36px;
+      }
+      
+      .profile-content {
+        padding: 10px 8px;
+      }
+      
+      .auth-box {
+        margin-top: 15px;
       }
     }
     
@@ -464,12 +525,15 @@
     }
   </style>
 
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const form = document.querySelector('#settings-section form');
-      const confirmSaveBtn = document.getElementById('confirm-save-btn');
-      const confirmChangesModal = new bootstrap.Modal(document.getElementById('confirm-changes-modal'));
-      const changesList = document.getElementById('changes-list');
+    $(document).ready(function() {
+      const $form = $('#settings-section form');
+      const $confirmSaveBtn = $('#confirm-save-btn');
+      const confirmChangesModal = new bootstrap.Modal($('#confirm-changes-modal')[0]);
+      const $changesList = $('#changes-list');
       
       // Store original values
       const originalValues = {
@@ -479,13 +543,47 @@
         username: '{{ user.username|escapejs }}'
       };
 
+      // Function to get current active section
+      function getCurrentSection() {
+        const activeSection = $('.profile-section.active');
+        if (activeSection.length) {
+          return activeSection.attr('id').replace('-section', '');
+        }
+        return 'settings'; // default
+      }
+
+      // Function to show specific section
+      function showSection(sectionName) {
+        // Remove active class from all links and sections
+        $('.profile-nav-link').removeClass('active');
+        $('.profile-section').removeClass('active');
+        
+        // Add active class to corresponding elements
+        $(`.profile-nav-link[data-section="${sectionName}"]`).addClass('active');
+        $(`#${sectionName}-section`).addClass('active');
+      }
+
+      // Handle navigation links
+      $('.profile-nav-link').on('click', function(e) {
+        e.preventDefault();
+        const section = $(this).data('section');
+        showSection(section);
+      });
+
+      // Check localStorage on page load and restore section
+      const savedSection = localStorage.getItem('profileActiveSection');
+      if (savedSection) {
+        showSection(savedSection);
+        // Clear the saved section after restoring
+        localStorage.removeItem('profileActiveSection');
+      }
+
       // Function to show alert messages
       function showAlert(message, section = 'account') {
-        let alertContainer = document.querySelector('#settings-section');
+        let $alertContainer = $('#settings-section');
         
         // Remove ALL existing error messages
-        const existingErrors = alertContainer.querySelectorAll('.errorlist');
-        existingErrors.forEach(error => error.remove());
+        $alertContainer.find('.errorlist').remove();
         
         // Create simple error message HTML
         const errorHtml = `
@@ -496,18 +594,16 @@
         
         // Insert error after the appropriate title
         if (section === 'password') {
-          const passwordTitle = alertContainer.querySelector('h5'); // "Change Password" title
-          passwordTitle.insertAdjacentHTML('afterend', errorHtml);
+          $alertContainer.find('h5').after(errorHtml); // "Change Password" title
         } else {
-          const accountTitle = alertContainer.querySelector('h3'); // "Account Settings" title
-          accountTitle.insertAdjacentHTML('afterend', errorHtml);
+          $alertContainer.find('h3').after(errorHtml); // "Account Settings" title
         }
       }
 
-      form.addEventListener('submit', function(e) {
+      $form.on('submit', function(e) {
         e.preventDefault();
         
-        const formData = new FormData(form);
+        const formData = new FormData($form[0]);
         const firstName = formData.get('first_name');
         const lastName = formData.get('last_name');
         const email = formData.get('email');
@@ -648,26 +744,28 @@
               </div>
             `;
           });
-          changesList.innerHTML = changesHtml;
-          confirmSaveBtn.style.display = 'inline-block';
+          $changesList.html(changesHtml);
+          $confirmSaveBtn.show();
           confirmChangesModal.show();
         } else {
           // No changes detected
-          changesList.innerHTML = '<p class="text-muted mb-0"><i class="bi bi-info-circle me-2"></i>No changes detected.</p>';
-          confirmSaveBtn.style.display = 'none';
+          $changesList.html('<p class="text-muted mb-0"><i class="bi bi-info-circle me-2"></i>No changes detected.</p>');
+          $confirmSaveBtn.hide();
           confirmChangesModal.show();
         }
       });
 
-      confirmSaveBtn.addEventListener('click', function() {
+      $confirmSaveBtn.on('click', function() {
         confirmChangesModal.hide();
+        // Save current section to localStorage before form submission
+        localStorage.setItem('profileActiveSection', getCurrentSection());
         // Submit the form without triggering the event listener again
-        form.removeEventListener('submit', arguments.callee);
-        form.submit();
+        $form.off('submit');
+        $form[0].submit();
       });
 
       // Handle Teacher Profile Form
-      const teacherForm = document.querySelector('#teacher-section form');
+      const $teacherForm = $('#teacher-section form');
       
       // Store original teacher profile values
       const originalTeacherValues = {
@@ -681,11 +779,10 @@
 
       // Function to show teacher alert messages
       function showTeacherAlert(message, field = '') {
-        let alertContainer = document.querySelector('#teacher-section');
+        let $alertContainer = $('#teacher-section');
         
         // Remove existing error messages
-        const existingErrors = alertContainer.querySelectorAll('.errorlist');
-        existingErrors.forEach(error => error.remove());
+        $alertContainer.find('.errorlist').remove();
         
         // Create error message HTML
         const errorHtml = `
@@ -695,15 +792,14 @@
         `;
         
         // Insert error after the teacher profile title
-        const teacherTitle = alertContainer.querySelector('h3');
-        teacherTitle.insertAdjacentHTML('afterend', errorHtml);
+        $alertContainer.find('h3').after(errorHtml);
       }
 
-      if (teacherForm) {
-        teacherForm.addEventListener('submit', function(e) {
+      if ($teacherForm.length) {
+        $teacherForm.on('submit', function(e) {
           e.preventDefault();
           
-          const formData = new FormData(teacherForm);
+          const formData = new FormData($teacherForm[0]);
           const title = formData.get('title');
           const experience = formData.get('experience');
           const teachingYears = formData.get('teaching_years');
@@ -819,63 +915,43 @@
                 </div>
               `;
             });
-            changesList.innerHTML = changesHtml;
-            confirmSaveBtn.style.display = 'inline-block';
+            $changesList.html(changesHtml);
+            $confirmSaveBtn.show();
             
             // Update the confirm button to handle teacher form submission
-            confirmSaveBtn.onclick = function() {
+            $confirmSaveBtn.off('click').on('click', function() {
               confirmChangesModal.hide();
-              teacherForm.removeEventListener('submit', arguments.callee);
-              teacherForm.submit();
-            };
+              // Save current section to localStorage before form submission
+              localStorage.setItem('profileActiveSection', getCurrentSection());
+              $teacherForm.off('submit');
+              $teacherForm[0].submit();
+            });
             
             confirmChangesModal.show();
           } else {
             // No changes detected
-            changesList.innerHTML = '<p class="text-muted mb-0"><i class="bi bi-info-circle me-2"></i>No changes detected.</p>';
-            confirmSaveBtn.style.display = 'none';
+            $changesList.html('<p class="text-muted mb-0"><i class="bi bi-info-circle me-2"></i>No changes detected.</p>');
+            $confirmSaveBtn.hide();
             confirmChangesModal.show();
           }
         });
       }
 
-      // Handle desktop navigation
-      const navLinks = document.querySelectorAll('.profile-nav-link');
-      const sections = document.querySelectorAll('.profile-section');
-      
-      navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          
-          // Remove active class from all links and sections
-          navLinks.forEach(l => l.classList.remove('active'));
-          sections.forEach(s => s.classList.remove('active'));
-          
-          // Add active class to clicked link
-          this.classList.add('active');
-          
-          // Show corresponding section
-          const sectionId = this.getAttribute('data-section') + '-section';
-          document.getElementById(sectionId).classList.add('active');
-        });
+      // Handle direct form submissions (without modal)
+      // Settings form direct submission
+      $('#settings-section form').on('submit', function(e) {
+        // Only save to localStorage if this is a direct submission (not through modal)
+        if (!e.isPropagationStopped()) {
+          localStorage.setItem('profileActiveSection', getCurrentSection());
+        }
       });
-      
-      // Handle mobile navigation
-      const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
-      
-      mobileNavBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          // Remove active class from all mobile buttons and sections
-          mobileNavBtns.forEach(b => b.classList.remove('active'));
-          sections.forEach(s => s.classList.remove('active'));
-          
-          // Add active class to clicked button
-          this.classList.add('active');
-          
-          // Show corresponding section
-          const sectionId = this.getAttribute('data-section') + '-section';
-          document.getElementById(sectionId).classList.add('active');
-        });
+
+      // Teacher form direct submission
+      $('#teacher-section form').on('submit', function(e) {
+        // Only save to localStorage if this is a direct submission (not through modal)
+        if (!e.isPropagationStopped()) {
+          localStorage.setItem('profileActiveSection', getCurrentSection());
+        }
       });
     });
   </script>
