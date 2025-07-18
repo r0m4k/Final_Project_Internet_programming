@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Avg
 from .models import Teacher, Rating  # Import your Teacher and Rating models
 
 # Create your views here.
@@ -11,10 +11,10 @@ from .models import Teacher, Rating  # Import your Teacher and Rating models
 def home(request):
     # Start with all teachers
     teachers = Teacher.objects.all()
-    pending_teachers = Teacher.objects.filter(is_active=False)  # Get pending teachers
+    pending_teachers = Teacher.objects.filter(is_active=False).annotate(avg_rating=Avg('ratings__rating'))  # Get pending teachers
     
     # Apply filters to active teachers only
-    active_teachers = Teacher.objects.filter(is_active=True)
+    active_teachers = Teacher.objects.filter(is_active=True).annotate(avg_rating=Avg('ratings__rating'))
     
     # Filter by name (search)
     search_query = request.GET.get('search', '')
@@ -41,6 +41,11 @@ def home(request):
         except ValueError:
             pass
     
+    # Filter by teachers with reviews
+    has_reviews = request.GET.get('has_reviews', '')
+    if has_reviews:
+        active_teachers = active_teachers.filter(ratings__isnull=False).distinct()
+    
     # Sort by price
     sort_by = request.GET.get('sort_by', '')
     if sort_by == 'price_asc':
@@ -53,12 +58,14 @@ def home(request):
     
     context = {
         'teachers': teachers,
+        'active_teachers': active_teachers,
         'pending_teachers': pending_teachers,
         'search_query': search_query,
         'min_years': min_years,
         'sort_by': sort_by,
-        'active_teachers': active_teachers,
+        'has_reviews': has_reviews,
     }
+    
     return render(request, "landing/index.html", context)
 
 def teacher(request, pk):

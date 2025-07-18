@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'landing',
     'authentication',
+    'shoppingCard',  # Still needed for views and URLs, just not models
 ]
 
 MIDDLEWARE = [

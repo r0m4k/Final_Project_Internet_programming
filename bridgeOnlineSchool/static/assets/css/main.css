@@ -149,16 +149,6 @@ h6 {
   flex: 0 0 auto; /* Don't grow or shrink */
 }
 
-.header .container-fluid {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.header .logo {
-  flex: 0 0 auto;
-}
-
 .header .navmenu {
   flex: 1;
   display: flex;
@@ -177,7 +167,9 @@ h6 {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 25px;
+  flex-wrap: nowrap;
+  margin-left: auto; /* Replace Bootstrap ms-auto */
 }
 
 .header .mobile-nav-toggle {
@@ -430,11 +422,42 @@ h6 {
     display: none !important;
   }
 
-  .desktop-user-section {
-    display: none !important;
+  /* Make header container distribute space evenly */
+  .header .container-fluid {
+    justify-content: space-between !important;
   }
 
-  /* Show mobile hamburger menu */
+  /* Logo stays on left with no extra margin */
+  .header .logo {
+    flex-shrink: 0;
+    margin-right: 0 !important;
+  }
+
+  .desktop-user-section {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+    margin: 0 20px !important;
+    margin-left: 0 !important; /* Override ms-auto */
+    gap: 15px !important; /* Ensure proper spacing when cart icon is hidden */
+  }
+  
+  /* Hide profile section on mobile, keep cart and sign-in/logout */
+  .desktop-user-section .user-section {
+    display: none !important;
+  }
+  
+  /* Keep sign-in button visible on mobile for guest users */
+  .desktop-user-section .btn-getstarted {
+    white-space: nowrap;
+    font-size: 12px; /* Smaller text on mobile */
+    padding: 6px 12px; /* Compact padding */
+  }
+  
+  /* Cart icon visibility is controlled by JavaScript based on cart contents */
+
+  /* Show mobile hamburger menu with no auto margin */
   .mobile-nav-toggle {
     display: block !important;
     color: var(--nav-color);
@@ -442,6 +465,8 @@ h6 {
     cursor: pointer;
     transition: color 0.3s;
     z-index: 10001;
+    flex-shrink: 0 !important;
+    margin-left: 0 !important;
   }
 
   .mobile-nav-toggle:hover {
@@ -664,7 +689,6 @@ h6 {
     padding: 10px 15px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    margin-right: 15px;
     width: fit-content;
     text-decoration: none;
     transition: background-color 0.3s;
@@ -3142,6 +3166,32 @@ section,
   min-width: 45px;
 }
 
+/* Rating tag styling */
+.team .team-image .rating-tag {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background-color: rgba(108, 117, 125, 0.35); /* 50% transparency */
+  color: #ffc107; /* Yellow color for star and text */
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  min-width: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.team .team-image .rating-tag i {
+  font-size: 0.75rem;
+  color: #ffc107;
+}
+
 @media (max-width: 576px) {
   .team .team-image .price-tag {
     font-size: 0.75rem;
@@ -3150,6 +3200,20 @@ section,
     left: 8px;
     border-radius: 15px;
     min-width: 40px;
+  }
+  
+  .team .team-image .rating-tag {
+    font-size: 0.75rem;
+    padding: 5px 8px;
+    top: 40px;
+    left: 8px;
+    border-radius: 15px;
+    min-width: 40px;
+    gap: 3px;
+  }
+  
+  .team .team-image .rating-tag i {
+    font-size: 0.65rem;
   }
 }
 
@@ -3173,6 +3237,81 @@ section,
 
 #confirmChangesModalLabel {
   color: white;
+}
+
+/* Shopping Cart Icon Styles */
+.cart-icon-link {
+  position: relative;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.cart-icon-link:hover {
+  text-decoration: none;
+  transform: scale(1.1);
+}
+
+#cart-icon {
+  color: white !important;
+  font-size: 1.5rem !important;
+  vertical-align: middle;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  display: none; /* Hidden by default, shown when items > 0 */
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  z-index: 10;
+  pointer-events: none; /* Prevent badge from interfering with clicks */
+}
+
+/* Mobile cart badge styles removed - using single cart icon now */
+
+/* Remove outdated mobile header actions style - now handled above */
+
+/* Duplicate rule removed - consolidated above */
+
+.desktop-user-section .user-section {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  white-space: nowrap;
+}
+
+.desktop-user-section .user-section:hover {
+  text-decoration: none;
+  color: white;
+}
+
+.desktop-user-section .cart-icon-link {
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+  /* Display is controlled by JavaScript based on cart contents */
+}
+
+.desktop-user-section .btn-getstarted {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Mobile navigation toggle */
+.mobile-nav-toggle {
+  flex-shrink: 0;
 }
 
 /* Admin Actions Styling */
@@ -3506,6 +3645,76 @@ section,
   font-style: italic;
 }
 
+/* Minimal Checkbox Styles */
+.reviews-filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.reviews-filter-checkbox:hover {
+  border-color: var(--accent-color);
+  background-color: #fff;
+}
+
+.form-check-input-minimal {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0;
+  position: relative;
+}
+
+.form-check-input-minimal:checked {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.form-check-input-minimal:checked::after {
+  content: '\2713';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.form-check-input-minimal:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 23, 23, 0.1);
+}
+
+.form-check-label-minimal {
+  font-size: 14px;
+  color: var(--default-color);
+  cursor: pointer;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.form-check-label-minimal i {
+  color: #ffc107;
+  font-size: 14px;
+}
+
+.review-filter-text {
+  display: none;
+}
+
 .btn-filter,
 .btn-clear {
   border: none;
@@ -3535,14 +3744,14 @@ section,
 /* Responsive design for mobile */
 @media (max-width: 768px) {
   .filter-section-minimal {
-    padding: 8px 10px;
-    border-radius: 20px;
+    padding: 10px 12px;
+    border-radius: 25px;
     max-width: 100%;
   }
   
   .filter-row {
     flex-direction: row;
-    gap: 4px;
+    gap: 6px;
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -3552,68 +3761,141 @@ section,
     min-width: 0;
   }
   
-  /* First three filter items take full width of first row */
+  /* First four filter items take equal space in rows */
   .filter-item:nth-child(1),
-  .filter-item:nth-child(2),
-  .filter-item:nth-child(3) {
+  .filter-item:nth-child(2) {
     flex: 1;
     min-width: 0;
   }
   
-  /* Last filter item (buttons) takes full width of second row */
+  .filter-item:nth-child(3),
   .filter-item:nth-child(4) {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  /* Last filter item (buttons) takes full width of third row */
+  .filter-item:nth-child(5) {
     flex: 1 0 100%;
     display: flex;
     justify-content: center;
-    gap: 4px;
-    margin-top: 6px;
+    gap: 6px;
+    margin-top: 8px;
   }
   
   .form-control-minimal,
   .form-select-minimal {
     width: 100%;
     min-width: 0;
-    padding: 6px 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 20px;
+  }
+  
+  .reviews-filter-checkbox {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 20px;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .form-check-label-minimal {
+    font-size: 12px;
+  }
+  
+  .form-check-input-minimal {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .form-check-input-minimal:checked::after {
+    top: -1px;
+    left: 3px;
     font-size: 10px;
-    border-radius: 15px;
+  }
+  
+  .review-filter-text {
+    display: none;
+  }
+  
+  .form-check-label-minimal i {
+    font-size: 16px;
+    margin: 0;
   }
   
   .btn-filter,
   .btn-clear {
     flex: 1;
-    max-width: 80px;
-    padding: 6px 8px;
-    font-size: 9px;
+    max-width: 90px;
+    padding: 8px 12px;
+    font-size: 12px;
     min-width: 0;
+    border-radius: 20px;
   }
 }
 
 /* For very small screens */
 @media (max-width: 480px) {
   .filter-section-minimal {
-    padding: 6px 8px;
+    padding: 8px 10px;
+    border-radius: 20px;
   }
   
   .filter-row {
-    gap: 2px;
+    gap: 4px;
+    justify-content: center;
   }
   
-  .filter-item:nth-child(4) {
-    margin-top: 4px;
-    gap: 2px;
+  .filter-item:nth-child(5) {
+    margin-top: 6px;
+    gap: 4px;
   }
   
   .form-control-minimal,
   .form-select-minimal {
-    padding: 4px 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    border-radius: 18px;
+  }
+  
+  .reviews-filter-checkbox {
+    width: 100%;
+    padding: 6px 10px;
+    border-radius: 18px;
+    gap: 6px;
+  }
+  
+  .form-check-label-minimal {
+    font-size: 11px;
+  }
+  
+  .form-check-input-minimal {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .form-check-input-minimal:checked::after {
+    top: -1px;
+    left: 2px;
     font-size: 9px;
+  }
+  
+  .review-filter-text {
+    display: none;
+  }
+  
+  .form-check-label-minimal i {
+    font-size: 14px;
+    margin: 0;
   }
   
   .btn-filter,
   .btn-clear {
-    padding: 4px 6px;
-    font-size: 8px;
-    max-width: 70px;
+    padding: 6px 10px;
+    font-size: 11px;
+    max-width: 80px;
+    border-radius: 18px;
   }
 }
 
@@ -3785,6 +4067,14 @@ section,
   pointer-events: none !important;
 }
 
+/* Fix for AOS blocking button clicks */
+[data-aos] .btn,
+[data-aos] button,
+.teacher-actions .btn,
+.teacher-actions button {
+  pointer-events: auto !important;
+}
+
 .teacher-profile .modal-content {
   border-radius: 15px;
   border: none;
@@ -3828,7 +4118,11 @@ section,
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  min-height: 48px;
+  min-width: 120px;
+  box-sizing: border-box;
 }
 
 .btn-minimal:hover {
@@ -3867,7 +4161,11 @@ section,
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  min-height: 48px;
+  min-width: 120px;
+  box-sizing: border-box;
 }
 
 .btn-minimal-grey:hover {
@@ -3883,10 +4181,55 @@ section,
 }
 
 @media (max-width: 768px) {
+  .btn-minimal,
   .btn-minimal-grey {
     width: 100%;
     justify-content: center;
     margin-bottom: 10px;
+    min-width: unset;
+    max-width: 100%;
+  }
+  
+  .teacher-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .teacher-actions .btn-minimal,
+  .teacher-actions .btn-minimal-grey {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .teacher-actions .btn-minimal:last-child,
+  .teacher-actions .btn-minimal-grey:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/*--------------------------------------------------------------
+# Modal Centering
+--------------------------------------------------------------*/
+#reviewModal .modal-dialog {
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+#reviewModal .modal-content {
+  margin: auto;
+}
+
+@media (max-width: 768px) {
+  #reviewModal .modal-dialog {
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  #reviewModal .modal-content {
+    width: 100%;
+    max-width: 500px;
   }
 }
 
