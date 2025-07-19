@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - Bridge Online School{% endblock %}
+
+{% block description %}Get in touch with Bridge Online School. Contact us for questions about bridge lessons, courses, or teacher applications. We're here to help you start your bridge journey.{% endblock %}
+
+{% block keywords %}contact bridge school, bridge lessons inquiry, bridge courses contact, bridge teacher application{% endblock %}
+
+{% block content %}
+<section class="contact section light-background" style="padding-top: 120px;">
+  <div class="container" data-aos="fade-up">
+    
+    <!-- Page Header -->
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h1 class="display-4 fw-bold mb-4" style="color: var(--heading-color);">
+          Contact Us
+        </h1>
+        <p class="lead text-muted">
+          We're here to help you on your bridge learning journey
+        </p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <!-- Contact Form -->
+      <div class="col-lg-10" data-aos="fade-up">
+        <div class="contact-form">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+              <h5 class="mb-0" style="color: var(--heading-color);">
+                <i class="bi bi-chat-dots me-2"></i>Send us a Message
+              </h5>
+            </div>
+            <div class="card-body p-4">
+              <form id="contactForm" novalidate>
+                <div class="row g-3">
+                  <!-- Personal Information -->
+                  <div class="col-md-6">
+                    <label for="firstName" class="form-label">First Name *</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName" required>
+                    <div class="invalid-feedback">Please provide your first name.</div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="lastName" class="form-label">Last Name *</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName" required>
+                    <div class="invalid-feedback">Please provide your last name.</div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="email" class="form-label">Email Address *</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                    <div class="invalid-feedback">Please provide a valid email address.</div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="+1 (555) 123-4567">
+                  </div>
+
+                  <!-- Subject -->
+                  <div class="col-12">
+                    <label for="subject" class="form-label">Subject *</label>
+                    <select class="form-select" id="subject" name="subject" required>
+                      <option value="">Choose a topic...</option>
+                      <option value="general">General Inquiry</option>
+                      <option value="student_support">Student Support</option>
+                      <option value="technical">Technical Issues</option>
+                      <option value="instructor">Become an Instructor</option>
+                      <option value="partnerships">Business Partnerships</option>
+                      <option value="feedback">Feedback & Suggestions</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a subject.</div>
+                  </div>
+
+                  <!-- Message -->
+                  <div class="col-12">
+                    <label for="message" class="form-label">Message *</label>
+                    <textarea class="form-control" id="message" name="message" rows="6" 
+                              placeholder="Tell us how we can help you..." required></textarea>
+                    <div class="invalid-feedback">Please provide your message.</div>
+                  </div>
+
+                  <!-- Bridge Experience -->
+                  <div class="col-12">
+                    <label for="experience" class="form-label">Bridge Experience Level</label>
+                    <select class="form-select" id="experience" name="experience">
+                      <option value="">Select your level (optional)</option>
+                      <option value="absolute_beginner">Absolute Beginner</option>
+                      <option value="beginner">Beginner</option>
+                      <option value="intermediate">Intermediate</option>
+                      <option value="advanced">Advanced</option>
+                      <option value="expert">Expert/Professional</option>
+                    </select>
+                  </div>
+
+                  <!-- Newsletter Signup -->
+                  <div class="col-12">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter" value="yes">
+                      <label class="form-check-label" for="newsletter">
+                        Subscribe to our newsletter for bridge tips, instructor spotlights, and platform updates
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="col-12">
+                    <button type="submit" class="btn rounded-pill" id="submitBtn"
+                            style="background-color: var(--accent-color); color: var(--contrast-color); border: none;">
+                      <i class="bi bi-send me-2"></i>Send Message
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="row justify-content-center mt-5">
+      <div class="col-lg-10" data-aos="fade-up">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-light">
+            <h5 class="mb-0" style="color: var(--heading-color);">
+              <i class="bi bi-question-circle me-2"></i>Frequently Asked Questions
+            </h5>
+          </div>
+          <div class="card-body p-4">
+            <div class="accordion" id="faqAccordion">
+              
+              <!-- FAQ 1 -->
+              <div class="accordion-item border-0 mb-3">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                          data-bs-target="#faq1" aria-expanded="false">
+                    How do I book a lesson with an instructor?
+                  </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    Simply browse our instructor profiles, select your preferred teacher, and click "Purchase a Lesson." 
+                    You'll be guided through our secure checkout process where you can specify your preferences and schedule.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 2 -->
+              <div class="accordion-item border-0 mb-3">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                          data-bs-target="#faq2" aria-expanded="false">
+                    What if I need to reschedule a lesson?
+                  </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    You can reschedule lessons up to 24 hours in advance without any penalty. Contact your instructor 
+                    directly or reach out to our support team for assistance.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 3 -->
+              <div class="accordion-item border-0 mb-3">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                          data-bs-target="#faq3" aria-expanded="false">
+                    Do I need any special software for online lessons?
+                  </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    Most lessons are conducted via Zoom, Skype, or similar platforms. Your instructor will coordinate 
+                    with you on the preferred method and provide any necessary links or software recommendations.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 4 -->
+              <div class="accordion-item border-0">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                          data-bs-target="#faq4" aria-expanded="false">
+                    What payment methods do you accept?
+                  </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    We currently accept major credit cards through our secure payment system. 
+                    PayPal and additional payment methods will be available soon.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.form-control:focus, .form-select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 0.2rem rgba(255, 23, 23, 0.25);
+}
+
+.accordion-button {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px !important;
+  font-weight: 500;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.accordion-button:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 23, 23, 0.25);
+}
+
+.accordion-item {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.accordion-body {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contactForm');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!contactForm.checkValidity()) {
+                e.stopPropagation();
+                contactForm.classList.add('was-validated');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
+            
+            // Simulate form submission
+            setTimeout(() => {
+                alert('Thank you for your message! We\'ll get back to you within 24 hours.');
+                contactForm.reset();
+                contactForm.classList.remove('was-validated');
+                
+                // Restore button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }, 2000);
+        });
+    }
+});
+</script>
+{% endblock %} 

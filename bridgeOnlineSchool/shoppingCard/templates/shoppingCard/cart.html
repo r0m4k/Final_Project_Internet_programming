@@ -3,7 +3,14 @@
 
 {% block title %}Shopping Cart - Bridge Online School{% endblock %}
 
+{% block description %}Review your bridge lesson selections and proceed to checkout. Secure payment for bridge lessons with expert teachers.{% endblock %}
+
+{% block keywords %}bridge lessons cart, checkout bridge lessons, buy bridge lessons, bridge payment{% endblock %}
+
 {% block content %}
+<!-- CSRF Token for AJAX requests -->
+{% csrf_token %}
+
 <!-- Hidden teacher data for non-AJAX adds -->
 {% if teacher_data %}
 <script type="application/json" id="teacher-data">{{ teacher_data|safe }}</script>
@@ -68,7 +75,7 @@
             </span>
           </div>
           
-          <button class="btn w-100 rounded-pill mb-3" 
+          <button class="btn w-100 rounded-pill mb-3" id="proceed-checkout-btn"
                   style="background-color: var(--accent-color); color: var(--contrast-color); border: none;">
             <i class="bi bi-credit-card me-2"></i>Proceed to Checkout
           </button>
@@ -143,6 +150,19 @@
   }
 }
 </style>
+
+<script>
+// Django configuration passed to JavaScript
+window.DJANGO_CONFIG = {
+    isAuthenticated: {{ user.is_authenticated|yesno:"true,false" }},
+    loginUrl: "{% url 'authentication:login' %}",
+    checkoutFormUrl: "{% url 'shoppingCard:checkout_form' %}",
+    createCheckoutUrl: "{% url 'shoppingCard:create_checkout' %}",
+    checkoutSuccessUrl: "{% url 'shoppingCard:checkout_success' %}",
+    userEmail: "{{ user.email|default:'' }}",
+    userName: "{{ user.get_full_name|default:user.username }}"
+};
+</script>
 
 <script>
 // Cart Management with localStorage
@@ -431,5 +451,125 @@ class ShoppingCart {
 
 // Initialize cart
 const cart = new ShoppingCart();
+
+// Checkout functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const checkoutBtn = document.getElementById('proceed-checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+            proceedToCheckout();
+        });
+    }
+});
+
+function proceedToCheckout() {
+    const cartData = cart.getCart();
+    const cartItems = Object.values(cartData);
+    
+    if (cartItems.length === 0) {
+        alert('Your cart is empty. Please add some lessons before checkout.');
+        return;
+    }
+    
+    // Check if user is authenticated
+    if (window.DJANGO_CONFIG.isAuthenticated) {
+        // User is authenticated, proceed to checkout form
+        window.location.href = window.DJANGO_CONFIG.checkoutFormUrl;
+    } else {
+        // Guest user needs to login first
+        if (confirm('You need to be logged in to complete your purchase. Would you like to sign in now?')) {
+            // Save cart data to localStorage before redirect
+            localStorage.setItem('pendingCheckout', JSON.stringify(cartItems));
+            window.location.href = window.DJANGO_CONFIG.loginUrl + '?next=' + encodeURIComponent(window.DJANGO_CONFIG.checkoutFormUrl);
+        }
+    }
+}
+
+function submitCheckoutData(cartItems) {
+    const checkoutBtn = document.getElementById('proceed-checkout-btn');
+    const originalText = checkoutBtn.innerHTML;
+    
+    // Show loading state
+    checkoutBtn.disabled = true;
+    checkoutBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+    
+    // Prepare checkout data
+    const checkoutData = {
+        items: cartItems.map(item => ({
+            teacher_id: item.id,
+            number_of_lessons: item.quantity,
+            notes: item.notes || '',
+            communication_method: item.communication_method || '',
+            total_price: (item.lesson_price * item.quantity).toFixed(2)
+        })),
+        total_amount: cart.getTotalPrice().toFixed(2),
+        billing_email: window.DJANGO_CONFIG.userEmail,
+        billing_name: window.DJANGO_CONFIG.userName
+    };
+    
+    // Send to backend
+    fetch(window.DJANGO_CONFIG.createCheckoutUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(checkoutData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Clear cart after successful checkout creation
+            localStorage.removeItem('bridgeSchoolCart');
+            
+            // Redirect to checkout confirmation or payment page
+            window.location.href = data.redirect_url || window.DJANGO_CONFIG.checkoutSuccessUrl + '?checkout_id=' + data.checkout_id;
+        } else {
+            alert(data.message || 'Error creating checkout. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Checkout error:', error);
+        alert('Error processing checkout. Please try again.');
+    })
+    .finally(() => {
+        // Restore button state
+        checkoutBtn.disabled = false;
+        checkoutBtn.innerHTML = originalText;
+    });
+}
+
+// Handle pending checkout for users who logged in after adding items to cart
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.DJANGO_CONFIG.isAuthenticated) {
+    const pendingCheckout = localStorage.getItem('pendingCheckout');
+    if (pendingCheckout) {
+        try {
+            const cartItems = JSON.parse(pendingCheckout);
+            
+            // Restore cart items to localStorage
+            const cartData = {};
+            cartItems.forEach(item => {
+                cartData[item.id.toString()] = item;
+            });
+            localStorage.setItem('bridgeSchoolCart', JSON.stringify(cartData));
+            
+            // Clear pending checkout
+            localStorage.removeItem('pendingCheckout');
+            
+            // Refresh cart display
+            cart.renderCart();
+            cart.updateNavbarCount();
+            
+            // Cart restored silently - no notification needed
+            
+        } catch (e) {
+            console.error('Error restoring pending checkout:', e);
+            localStorage.removeItem('pendingCheckout');
+        }
+    }
+    }
+});
 </script>
 {% endblock %} 

@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ teacher.first_name }} {{ teacher.last_name }} - Bridge Online School{% endblock %}
+{% block title %}{{ teacher.first_name }} {{ teacher.last_name }} - {{ teacher.title }} | Bridge Online School{% endblock %}
+
+{% block description %}Learn bridge with {{ teacher.first_name }} {{ teacher.last_name }}, {{ teacher.title }}. {{ teacher.experience|truncatewords:20 }} Book lessons starting at ${{ teacher.lesson_price }}.{% endblock %}
+
+{% block keywords %}{{ teacher.first_name }} {{ teacher.last_name }}, bridge teacher, {{ teacher.title }}, bridge lessons, online bridge coaching{% endblock %}
 
 {% block content %}
   <!-- Teacher Profile Section -->

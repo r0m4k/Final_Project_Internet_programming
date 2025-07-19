@@ -176,3 +176,11 @@ def delete_review(request, review_id):
             return JsonResponse({'success': False, 'message': 'An error occurred while deleting the review.'})
         messages.error(request, 'An error occurred while deleting the review.')
     return redirect('landing:teacher', pk=teacher_id)
+
+def about_us(request):
+    """About Us static page"""
+    return render(request, 'landing/about_us.html')
+
+def contact(request):
+    """Contact static page"""
+    return render(request, 'landing/contact.html')

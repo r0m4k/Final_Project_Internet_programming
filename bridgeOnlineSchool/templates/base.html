@@ -5,13 +5,18 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index - Consulting Bootstrap Template</title>
-  <meta name="description" content="">
-  <meta name="keywords" content="">
+  <title>{% block title %}Bridge Online School - Learn Bridge Online{% endblock %}</title>
+  <meta name="description" content="{% block description %}Learn bridge online with expert teachers. Bridge Online School connects the best teachers with students for personalized bridge lessons and courses.{% endblock %}">
+  <meta name="keywords" content="{% block keywords %}bridge lessons, bridge school, online bridge, bridge courses, learn bridge, bridge teachers, card games{% endblock %}">
 
   <!-- Favicons -->
-  <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+  <link href="{% static 'assets/img/logo/logo.ico' %}" rel="icon" type="image/x-icon">
+  <link href="{% static 'assets/img/logo/logo.ico' %}" rel="shortcut icon" type="image/x-icon">
   <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  
+  <!-- Additional favicon sizes for better browser support -->
+  <link href="{% static 'assets/img/logo/logo.ico' %}" rel="icon" sizes="16x16" type="image/x-icon">
+  <link href="{% static 'assets/img/logo/logo.ico' %}" rel="icon" sizes="32x32" type="image/x-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">

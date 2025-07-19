@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Profile - Bridge Online School{% endblock %}
+
+{% block description %}Manage your Bridge Online School profile, view recent activity, and update your account settings. Track your lesson purchases and reviews.{% endblock %}
+
+{% block keywords %}bridge profile, student dashboard, lesson history, bridge account settings{% endblock %}
+
 {% block content %}
   <!-- Profile Section -->
   <section class="auth-container">
@@ -31,8 +37,8 @@
                         </a>
                       </li>
                       <li class="mb-3">
-                        <a href="#messages" class="profile-nav-link" data-section="messages">
-                          <i class="bi bi-envelope"></i>
+                        <a href="#notifications" class="profile-nav-link" data-section="notifications">
+                          <i class="bi bi-bell"></i>
                         </a>
                       </li>
                     </ul>
@@ -228,44 +234,94 @@
                     </form>
                   </div>
                   
-                  <!-- Messages Section -->
-                  <div id="messages-section" class="profile-section">
-                    <h3 class="mb-4">Messages</h3>
+                  <!-- Notifications Section -->
+                  <div id="notifications-section" class="profile-section">
+                    <h3 class="mb-4">Recent Activity</h3>
                     
-                    <div class="messages-container">
-                      <div class="message-item">
-                        <div class="message-header">
-                          <div class="message-avatar">
-                            <i class="bi bi-person-circle"></i>
+                    <div class="notifications-container">
+                      {% if recent_purchases or recent_reviews %}
+                        
+                        <!-- Recent Purchases -->
+                        {% if recent_purchases %}
+                          <div class="notification-category mb-4">
+                            <h5 class="mb-3 text-success">
+                              <i class="bi bi-cart-check me-2"></i>Recent Purchases
+                            </h5>
+                            {% for purchase in recent_purchases %}
+                              <div class="notification-item">
+                                <div class="notification-header">
+                                  <div class="notification-avatar">
+                                    <i class="bi bi-bag-check text-success"></i>
+                                  </div>
+                                  <div class="notification-info">
+                                    <h6>Lesson Purchased</h6>
+                                    <small class="text-muted">{{ purchase.created_at|timesince }} ago</small>
+                                  </div>
+                                </div>
+                                <div class="notification-content">
+                                                                     <p>
+                                     <strong>{{ purchase.number_of_lessons }} lesson{{ purchase.number_of_lessons|pluralize }}</strong> with 
+                                     <strong>{{ purchase.teacher_profile.first_name }} {{ purchase.teacher_profile.last_name }}</strong>
+                                     <br>
+                                     <span class="text-muted">Total: ${{ purchase.total_price }}</span>
+                                   </p>
+                                </div>
+                              </div>
+                            {% endfor %}
                           </div>
-                          <div class="message-info">
-                            <h6>System Administrator</h6>
-                            <small class="text-muted">2 hours ago</small>
+                        {% endif %}
+
+                        <!-- Recent Reviews -->
+                        {% if recent_reviews %}
+                          <div class="notification-category">
+                            <h5 class="mb-3 text-primary">
+                              <i class="bi bi-star me-2"></i>Recent Reviews Submitted
+                            </h5>
+                            {% for review in recent_reviews %}
+                              <div class="notification-item">
+                                <div class="notification-header">
+                                  <div class="notification-avatar">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                  </div>
+                                  <div class="notification-info">
+                                    <h6>Review Submitted</h6>
+                                    <small class="text-muted">{{ review.created_at|timesince }} ago</small>
+                                  </div>
+                                </div>
+                                <div class="notification-content">
+                                  <p>
+                                    You rated <strong>{{ review.teacher.first_name }} {{ review.teacher.last_name }}</strong>
+                                    <span class="rating-stars ms-2">
+                                      {% for i in "12345" %}
+                                        {% if review.rating >= i|add:0 %}
+                                          <i class="bi bi-star-fill text-warning"></i>
+                                        {% else %}
+                                          <i class="bi bi-star text-muted"></i>
+                                        {% endif %}
+                                      {% endfor %}
+                                    </span>
+                                    <br>
+                                    {% if review.description %}
+                                      <span class="text-muted">"{{ review.description|truncatewords:15 }}"</span>
+                                    {% endif %}
+                                  </p>
+                                </div>
+                              </div>
+                            {% endfor %}
                           </div>
+                        {% endif %}
+
+                      {% else %}
+                        <!-- Empty state -->
+                        <div class="text-center py-5">
+                          <i class="bi bi-bell-slash text-muted" style="font-size: 3rem;"></i>
+                          <h5 class="text-muted mt-3">No Recent Activity</h5>
+                          <p class="text-muted">Your recent purchases and reviews will appear here.</p>
+                          <a href="{% url 'landing:home' %}#team" class="btn btn-outline-primary rounded-pill mt-3">
+                            <i class="bi bi-search me-2"></i>Find a Teacher
+                          </a>
                         </div>
-                        <div class="message-content">
-                          <p>Welcome to Bridge Online School! We're excited to have you as part of our community.</p>
-                        </div>
-                      </div>
-                      
-                      <div class="message-item">
-                        <div class="message-header">
-                          <div class="message-avatar">
-                            <i class="bi bi-person-circle"></i>
-                          </div>
-                          <div class="message-info">
-                            <h6>Course Instructor</h6>
-                            <small class="text-muted">1 day ago</small>
-                          </div>
-                        </div>
-                        <div class="message-content">
-                          <p>Your next lesson is scheduled for tomorrow. Don't forget to review the materials!</p>
-                        </div>
-                      </div>
-                      
-                      <div class="text-center mt-4">
-                        <p class="text-muted">No more messages</p>
-                      </div>
+                      {% endif %}
                     </div>
                   </div>
                 </div>
@@ -378,29 +434,52 @@
       display: block;
     }
     
-    .message-item {
+    .notification-item {
       background: #f8f9fa;
       padding: 20px;
       border-radius: 10px;
       margin-bottom: 15px;
+      border-left: 4px solid transparent;
     }
     
-    .message-header {
+    .notification-category:first-child .notification-item {
+      border-left-color: #198754; /* Success green for purchases */
+    }
+    
+    .notification-category:not(:first-child) .notification-item {
+      border-left-color: #0d6efd; /* Primary blue for reviews */
+    }
+    
+    .notification-header {
       display: flex;
       align-items: center;
       margin-bottom: 10px;
     }
     
-    .message-avatar {
+    .notification-avatar {
       width: 40px;
       height: 40px;
-      background: #942828;
-      color: white;
+      background: #f8f9fa;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-right: 15px;
+      font-size: 1.2rem;
+    }
+    
+    .notification-content .rating-stars {
+      display: inline-block;
+    }
+    
+    .notification-content .rating-stars i {
+      font-size: 0.85rem;
+    }
+    
+    .notification-category h5 {
+      font-weight: 600;
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 8px;
     }
     
     /* Responsive Design */

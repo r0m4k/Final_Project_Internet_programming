@@ -11,12 +11,13 @@
         <nav id="navmenu" class="navmenu position-absolute top-50 start-50 translate-middle">
             <ul>
                 <li><a href="{% url 'landing:home' %}" class="{% if request.resolver_match.namespace == 'landing' and request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
-                <li><a href="aboutUs.html">About Us</a></li>
+                <li><a href="{% url 'landing:about_us' %}" class="{% if request.resolver_match.namespace == 'landing' and request.resolver_match.url_name == 'about_us' %}active{% endif %}">About Us</a></li>
+                <li><a href="{% url 'landing:contact' %}" class="{% if request.resolver_match.namespace == 'landing' and request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>
             </ul>
         </nav>
 
         <!-- Desktop User Section -->
-        <div class="desktop-user-section">
+        <div class="desktop-user-section d-none d-lg-flex">
             <!-- Shopping Cart Icon (visible when cart has items) -->
             <a href="{% url 'shoppingCard:cart' %}" class="cart-icon-link" id="cart-icon-link" style="display: none;">
                 <i class="bi bi-cart3" id="cart-icon"></i>
@@ -45,9 +46,8 @@
     
     <ul class="mobile-nav-list">
         <li><a href="{% url 'landing:home' %}" class="{% if request.resolver_match.namespace == 'landing' and request.resolver_match.url_name == 'home' %}active{% endif %}"><span>Home</span></a></li>
-        <li><a href="aboutUs.html"><span>About Us</span></a></li>
-        <li><a href="#pricing"><span>Materials</span></a></li>
-        <li><a href="#contact"><span>Contact</span></a></li>
+        <li><a href="{% url 'landing:about_us' %}" class="{% if request.resolver_match.namespace == 'landing' and request.resolver_match.url_name == 'about_us' %}active{% endif %}"><span>About Us</span></a></li>
+        <li><a href="{% url 'landing:contact' %}" class="{% if request.resolver_match.namespace == 'landing' and request.resolver_match.url_name == 'contact' %}active{% endif %}"><span>Contact</span></a></li>
     </ul>
 
     <!-- Mobile User Section -->

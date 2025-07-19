@@ -8,7 +8,10 @@ from django import forms
 from .forms import SignUpForm, ForgotPasswordForm, TeacherProfileForm
 from django.core.mail import send_mail
 from django.conf import settings
-from landing.models import Teacher
+from landing.models import Teacher, Rating
+from shoppingCard.models import Purchase
+from django.utils import timezone
+from datetime import timedelta
 import random
 import string
 import re
@@ -207,8 +210,25 @@ def profile_view(request):
     else:
         teacher_form = TeacherProfileForm()
 
+    # Get recent activity for notifications (last 30 days)
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    
+    # Recent purchases
+    recent_purchases = Purchase.objects.filter(
+        user_profile=request.user,
+        created_at__gte=thirty_days_ago
+    ).select_related('teacher_profile').order_by('-created_at')[:5]
+    
+    # Recent reviews submitted
+    recent_reviews = Rating.objects.filter(
+        user=request.user,
+        created_at__gte=thirty_days_ago
+    ).select_related('teacher').order_by('-created_at')[:5]
+
     return render(request, 'authentication/profile.html', {
         'user': request.user,
         'teacher_profile': teacher_profile,
-        'teacher_form': teacher_form
+        'teacher_form': teacher_form,
+        'recent_purchases': recent_purchases,
+        'recent_reviews': recent_reviews,
     })

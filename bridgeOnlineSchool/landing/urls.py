@@ -5,6 +5,8 @@ app_name = 'landing'
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("about-us/", views.about_us, name="about_us"),
+    path("contact/", views.contact, name="contact"),
     path("teachers/<int:pk>", views.teacher, name="teacher"),
     path("teachers/<int:teacher_id>/review/", views.add_review, name="add_review"),
     path("admin/delete-review/<int:review_id>/", views.delete_review, name="delete_review"),
