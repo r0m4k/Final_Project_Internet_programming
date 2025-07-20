@@ -1,0 +1,29 @@
+create a virtual env
+python3 -m venv .venv
+
+activate a virtual env
+source .venv/bin/activate
+
+isntall django
+pip install django
+
+create a django project
+django-admin startproject bridgeOnlineSchool
+
+create an app inside django
+python manage.py startapp polls
+
+run a django server (from a project directory)
+python manage.py runserver
+
+make migrations 
+python manage.py makemigrations
+
+migrate 
+python manage.py migrate
+
+create an admin User
+python manage.py createsuperuser
+
+create requirements.txt
+pip freeze > requirements.txt
