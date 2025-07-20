@@ -17,8 +17,19 @@ import string
 import re
 
 
-# Create your views here.
 def login_user(request):
+    """
+    Handles user authentication and login functionality.
+    
+    Validates user credentials and redirects to profile page upon successful authentication.
+    Displays error message for invalid credentials.
+    
+    Args:
+        request: HTTP request object containing login credentials
+        
+    Returns:
+        HttpResponse: Redirect to profile page on success or login page with error
+    """
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -34,11 +45,34 @@ def login_user(request):
     return render(request, "authentication/auth.html", {})
 
 def logout_user(request):
+    """
+    Handles user logout and session termination.
+    
+    Clears user session and redirects to login page.
+    
+    Args:
+        request: HTTP request object
+        
+    Returns:
+        HttpResponse: Rendered login page template
+    """
     logout(request)
     return render(request, "authentication/auth.html", {})
 
 
 def register_user(request):
+    """
+    Handles new user registration with form validation.
+    
+    Creates new user account, authenticates the user, and redirects to profile page.
+    Validates form data and displays errors if validation fails.
+    
+    Args:
+        request: HTTP request object containing registration data
+        
+    Returns:
+        HttpResponse: Redirect to profile on success or registration page with form
+    """
     form = SignUpForm()
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -58,20 +92,32 @@ def register_user(request):
 
 
 def forgot_password(request):
+    """
+    Handles password reset requests by generating temporary passwords.
+    
+    Validates user email, generates a secure temporary password, and sends it via email.
+    Users are required to change the temporary password upon next login.
+    
+    Args:
+        request: HTTP request object containing email for password reset
+        
+    Returns:
+        HttpResponse: Redirect to login page on success or password reset form
+    """
     if request.method == 'POST':
         form = ForgotPasswordForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
             user = User.objects.get(email=email)
             
-            # Generate a temporary password
+            # Generate a secure temporary password with mixed characters
             temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
             
-            # Set the new password
+            # Update user password with the temporary password
             user.set_password(temp_password)
             user.save()
             
-            # Send email with temporary password
+            # Send notification email with temporary password
             subject = 'Your Temporary Password - Bridge Online School'
             message = f'''
 Hello {user.username},
@@ -99,11 +145,22 @@ Bridge Online School Team
 
 
 def profile_view(request):
-    """Profile page view with settings, messages, and teacher profile sections"""
+    """
+    Manages user profile page with account settings and teacher profile functionality.
+    
+    Handles both regular user account updates and teacher profile creation/updates.
+    Supports password changes with complexity validation and teacher profile management.
+    
+    Args:
+        request: HTTP request object containing profile update data
+        
+    Returns:
+        HttpResponse: Rendered profile page or redirect to login if unauthenticated
+    """
     if not request.user.is_authenticated:
         return redirect('authentication:login')
 
-    # Get or create teacher profile if it doesn't exist
+    # Retrieve existing teacher profile or set to None if not found
     try:
         teacher_profile = request.user.teacher_profile
     except Teacher.DoesNotExist:
@@ -113,21 +170,16 @@ def profile_view(request):
         user = request.user
         changes_made = False
 
-        # Debug: Print POST data to see what's being sent
-        print("POST data keys:", list(request.POST.keys()))
-        print("POST data:", dict(request.POST))
-
-        # Check which form was submitted
-        # Method 1: Check for teacher_profile_submit button
+        # Determine which form was submitted based on form fields
         is_teacher_form = 'teacher_profile_submit' in request.POST
         
-        # Method 2: Check for teacher-specific fields as fallback
+        # Fallback detection using teacher-specific field presence
         if not is_teacher_form:
             teacher_fields = ['title', 'experience', 'lesson_price', 'course_price']
             is_teacher_form = any(field in request.POST for field in teacher_fields)
         
         if is_teacher_form:
-            # Handle teacher profile form
+            # Process teacher profile form submission
             if teacher_profile:
                 teacher_form = TeacherProfileForm(request.POST, request.FILES, instance=teacher_profile)
             else:
@@ -139,20 +191,17 @@ def profile_view(request):
                 teacher.user = user
                 teacher.first_name = user.first_name
                 teacher.last_name = user.last_name
-                teacher.is_active = False  # Set to True by default as requested
+                teacher.is_active = False  # Set as pending for admin approval
                 teacher.save()
                 return redirect('authentication:profile')
             else:
-                print("Teacher profile form is invalid:", teacher_form.errors)
-                # Add form errors to messages
+                # Display validation errors to user for correction
                 for field, errors in teacher_form.errors.items():
                     for error in errors:
                         messages.error(request, f"{field.replace('_', ' ').title()}: {error}")
                 return redirect('authentication:profile')
         else:
-            # Handle account settings form
-            # --- Account Info Update ---
-            print("Handling account settings form")
+            # Process account settings form submission
             if user.first_name != request.POST.get('first_name'):
                 user.first_name = request.POST.get('first_name')
                 changes_made = True
@@ -182,7 +231,7 @@ def profile_view(request):
             if new_password:
                 confirm_password = request.POST.get('confirm_password')
 
-                # Password complexity regex: min 8 chars, 1 letter, 1 number, 1 special char
+                # Define password complexity requirements for security validation
                 password_pattern = re.compile(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$')
 
                 if new_password != confirm_password:
@@ -191,12 +240,12 @@ def profile_view(request):
                     messages.error(request, 'Password must be at least 8 characters long and contain at least one letter, one number, and one special character.')
                 else:
                     user.set_password(new_password)
-                    update_session_auth_hash(request, user)  # Important!
+                    update_session_auth_hash(request, user)  # Maintain user session after password change
                     changes_made = True
 
             if changes_made:
                 user.save()
-                # Update teacher profile names if they exist
+                # Synchronize teacher profile names with user account changes
                 if teacher_profile:
                     teacher_profile.first_name = user.first_name
                     teacher_profile.last_name = user.last_name
@@ -204,22 +253,22 @@ def profile_view(request):
 
             return redirect('authentication:profile')
 
-    # Create teacher form for rendering
+    # Initialize teacher form for template rendering
     if teacher_profile:
         teacher_form = TeacherProfileForm(instance=teacher_profile)
     else:
         teacher_form = TeacherProfileForm()
 
-    # Get recent activity for notifications (last 30 days)
+    # Retrieve recent user activity for notifications dashboard
     thirty_days_ago = timezone.now() - timedelta(days=30)
     
-    # Recent purchases
+    # Fetch recent lesson purchases for activity display
     recent_purchases = Purchase.objects.filter(
         user_profile=request.user,
         created_at__gte=thirty_days_ago
     ).select_related('teacher_profile').order_by('-created_at')[:5]
     
-    # Recent reviews submitted
+    # Fetch recent teacher reviews submitted by user
     recent_reviews = Rating.objects.filter(
         user=request.user,
         created_at__gte=thirty_days_ago

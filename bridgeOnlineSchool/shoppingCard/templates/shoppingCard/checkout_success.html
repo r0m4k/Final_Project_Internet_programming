@@ -116,16 +116,13 @@
     <!-- Next Steps -->
     <div class="row justify-content-center mb-5">
       <div class="col-lg-8">
-        <div class="card border-primary">
+        <div class="card">
           <div class="card-body text-center">
             <h5 class="card-title" style="color: var(--heading-color);">What's Next?</h5>
             <p class="card-text text-muted">
               Your teachers will contact you within 24 hours using your preferred communication method to schedule your lessons.
             </p>
             <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
-              <a href="{% url 'shoppingCard:my_purchases' %}" class="btn btn-outline-primary rounded-pill">
-                <i class="bi bi-list-check me-2"></i>View All Purchases
-              </a>
               <a href="{% url 'landing:home' %}#team" class="btn rounded-pill" 
                  style="background-color: var(--accent-color); color: var(--contrast-color); border: none;">
                 <i class="bi bi-arrow-left me-2"></i>Back to Teachers
@@ -139,38 +136,4 @@
   </div>
 </section>
 
-<style>
-.lesson-item {
-  transition: background-color 0.3s ease;
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.lesson-item:hover {
-  background-color: rgba(0, 0, 0, 0.02);
-}
-
-.success-icon i {
-  animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@media (max-width: 768px) {
-  .lesson-item .row {
-    text-align: center;
-  }
-  
-  .lesson-item .col-md-2:last-child {
-    text-align: center !important;
-  }
-}
-</style>
 {% endblock %} 

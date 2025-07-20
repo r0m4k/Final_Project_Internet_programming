@@ -4,8 +4,14 @@ from django.contrib.auth.models import User
 
 
 class Teacher(models.Model):
+    """
+    Represents a bridge instructor in the online school platform.
+    
+    Stores teacher profile information, pricing details, and activation status.
+    Links to Django User model for authentication and account management.
+    """
 
-    # possibility to connect the teacher field to a user
+    # Optional connection to Django User model for registered teacher accounts
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='teacher_profile', null=True, blank=True)
 
     first_name = models.CharField(max_length=50)
@@ -17,7 +23,7 @@ class Teacher(models.Model):
     lesson_price = models.DecimalField(max_digits=6, decimal_places=0)
     course_price = models.DecimalField(max_digits=7, decimal_places=0)
 
-    # is listing active 
+    # Controls public visibility of teacher profile
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
@@ -25,8 +31,14 @@ class Teacher(models.Model):
     
 
 class Rating(models.Model):
+    """
+    Represents user reviews and ratings for bridge teachers.
+    
+    Enforces one review per user per teacher to maintain review integrity.
+    Ratings are on a 1-5 scale with optional descriptive text.
+    """
 
-    # possibility to connect the teacher field to a user
+    # Foreign key relationships for review association
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
     rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
@@ -34,7 +46,7 @@ class Rating(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
-        unique_together = ('teacher', 'user')  # One review per user per teacher
+        unique_together = ('teacher', 'user')  # Ensures one review per user per teacher
 
     def __str__(self):
         return f"{self.user.username} - {self.teacher.first_name} {self.teacher.last_name} ({self.rating}/5)"

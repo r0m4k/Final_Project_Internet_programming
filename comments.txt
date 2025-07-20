@@ -1,6 +1,0 @@
-1) put all js files on top with defer
-
--- update migrations 
-1) connect it to the user
-2) add champion title to the teachers card 
-3) add years of teaching to the teachers card

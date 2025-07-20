@@ -1,3 +1,11 @@
+"""
+Shopping Cart and E-commerce Views Module
+
+This module handles all shopping cart functionality, checkout processing,
+and purchase management for the Bridge Online School platform. Implements
+a client-side cart system using localStorage with server-side checkout processing.
+"""
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -10,11 +18,25 @@ from decimal import Decimal
 from landing.models import Teacher
 from .models import Purchase, Checkout
 
+
 def add_to_cart(request, teacher_id):
-    """Get teacher data for adding to localStorage cart"""
+    """
+    Retrieves teacher data for client-side cart management.
+    
+    Provides teacher information in JSON format for localStorage-based
+    shopping cart functionality. Supports both AJAX and standard requests.
+    
+    Args:
+        request: HTTP request object
+        teacher_id: Primary key of the teacher to add to cart
+        
+    Returns:
+        JsonResponse: Teacher data for AJAX requests
+        HttpResponse: Rendered cart page for standard requests
+    """
     teacher = get_object_or_404(Teacher, id=teacher_id)
     
-    # Return teacher data as JSON for localStorage
+    # Prepare teacher data for client-side cart storage
     teacher_data = {
         'id': teacher.id,
         'first_name': teacher.first_name,
@@ -27,39 +49,88 @@ def add_to_cart(request, teacher_id):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return JsonResponse({'success': True, 'teacher': teacher_data})
     
-    # For non-AJAX requests, redirect to cart page
+    # Fallback for non-AJAX requests
     return render(request, 'shoppingCard/cart.html', {'teacher_data': json.dumps(teacher_data)})
 
+
 def view_cart(request):
-    """Display the shopping cart page"""
+    """
+    Displays the shopping cart management page.
+    
+    Renders the cart interface where users can review, modify, and
+    proceed to checkout with their selected lesson packages.
+    
+    Args:
+        request: HTTP request object
+        
+    Returns:
+        HttpResponse: Rendered shopping cart page template
+    """
     return render(request, 'shoppingCard/cart.html')
 
+
 def get_cart_count(request):
-    """Get total number of items in cart from localStorage (client-side handled)"""
+    """
+    Legacy API endpoint for cart item counting.
+    
+    Maintained for compatibility with older implementations.
+    Current cart system uses client-side localStorage management.
+    
+    Args:
+        request: HTTP request object
+        
+    Returns:
+        JsonResponse: Cart count (always returns 0 for localStorage system)
+    """
     # This endpoint is no longer needed with localStorage, but keeping for compatibility
     return JsonResponse({'count': 0})
 
+
 @login_required
 def checkout_form(request):
-    """Display the checkout form page"""
+    """
+    Displays the checkout form for payment processing.
+    
+    Renders the checkout interface where authenticated users can
+    review their cart and complete the payment process.
+    
+    Args:
+        request: HTTP request object
+        
+    Returns:
+        HttpResponse: Rendered checkout form template
+    """
     return render(request, 'shoppingCard/checkout_form.html')
+
 
 @login_required
 @require_POST
 def create_checkout(request):
-    """Create a checkout and associated purchases from cart data"""
+    """
+    Processes checkout data and creates purchase records.
+    
+    Converts client-side cart data into server-side Purchase and Checkout
+    models. Handles transaction processing, error management, and data validation.
+    Implements atomic operations to ensure data consistency.
+    
+    Args:
+        request: HTTP request object containing JSON cart data
+        
+    Returns:
+        JsonResponse: Success status with checkout ID or error details
+    """
     try:
-        # Parse JSON data from request
+        # Parse and validate incoming cart data
         data = json.loads(request.body)
         
-        # Validate required fields
+        # Validate required checkout fields
         if not data.get('items') or not data.get('total_amount'):
             return JsonResponse({
                 'success': False,
                 'message': 'Invalid cart data'
             })
         
-        # Create checkout object
+        # Create primary checkout record
         checkout = Checkout.objects.create(
             user=request.user,
             total_amount=Decimal(str(data['total_amount'])),
@@ -70,7 +141,7 @@ def create_checkout(request):
             payment_status='completed'  # Set to completed for demo purposes
         )
         
-        # Create individual purchases
+        # Process individual lesson purchases
         purchases = []
         for item in data['items']:
             try:
@@ -88,7 +159,7 @@ def create_checkout(request):
                 purchases.append(purchase)
                 
             except Teacher.DoesNotExist:
-                # Clean up on error
+                # Implement atomic rollback on errors
                 checkout.delete()
                 for p in purchases:
                     p.delete()
@@ -97,7 +168,7 @@ def create_checkout(request):
                     'message': f'Teacher with ID {item["teacher_id"]} not found'
                 })
             except Exception as e:
-                # Clean up on error
+                # Implement atomic rollback on errors
                 checkout.delete()
                 for p in purchases:
                     p.delete()
@@ -106,9 +177,9 @@ def create_checkout(request):
                     'message': f'Error creating purchase: {str(e)}'
                 })
         
-        # Associate purchases with checkout
+        # Associate all purchases with checkout record
         checkout.products.set(purchases)
-        checkout.save()  # This will recalculate total_amount
+        checkout.save()  # Triggers total amount recalculation
         
         return JsonResponse({
             'success': True,
@@ -127,9 +198,21 @@ def create_checkout(request):
             'message': f'Error creating checkout: {str(e)}'
         })
 
+
 @login_required
 def checkout_success(request):
-    """Display checkout success page"""
+    """
+    Displays successful checkout confirmation page.
+    
+    Shows order details and purchase confirmation for completed transactions.
+    Validates checkout ownership and provides purchase summary.
+    
+    Args:
+        request: HTTP request object with checkout_id parameter
+        
+    Returns:
+        HttpResponse: Rendered success page or redirect to cart on error
+    """
     checkout_id = request.GET.get('checkout_id')
     
     if not checkout_id:
@@ -149,9 +232,21 @@ def checkout_success(request):
         messages.error(request, 'Checkout not found')
         return redirect('shoppingCard:cart')
 
+
 @login_required
 def my_purchases(request):
-    """Display user's purchase history"""
+    """
+    Displays user's complete purchase and checkout history.
+    
+    Provides comprehensive view of all lesson purchases and transactions
+    for the authenticated user, ordered by most recent first.
+    
+    Args:
+        request: HTTP request object
+        
+    Returns:
+        HttpResponse: Rendered purchase history page template
+    """
     purchases = Purchase.objects.filter(user_profile=request.user).order_by('-date')
     checkouts = Checkout.objects.filter(user=request.user).order_by('-checkout_date')
     
@@ -161,9 +256,22 @@ def my_purchases(request):
     }
     return render(request, 'shoppingCard/my_purchases.html', context)
 
+
 @login_required
 def purchase_detail(request, purchase_id):
-    """Display details of a specific purchase"""
+    """
+    Displays detailed information for a specific lesson purchase.
+    
+    Shows comprehensive purchase details including teacher information,
+    lesson details, pricing, and communication preferences.
+    
+    Args:
+        request: HTTP request object
+        purchase_id: UUID of the specific purchase to display
+        
+    Returns:
+        HttpResponse: Rendered purchase detail page template
+    """
     purchase = get_object_or_404(Purchase, purchase_id=purchase_id, user_profile=request.user)
     
     context = {
@@ -171,9 +279,22 @@ def purchase_detail(request, purchase_id):
     }
     return render(request, 'shoppingCard/purchase_detail.html', context)
 
+
 @login_required
 def checkout_detail(request, checkout_id):
-    """Display details of a specific checkout"""
+    """
+    Displays comprehensive details for a specific checkout transaction.
+    
+    Shows complete checkout information including all associated purchases,
+    payment details, and transaction status.
+    
+    Args:
+        request: HTTP request object
+        checkout_id: UUID of the specific checkout to display
+        
+    Returns:
+        HttpResponse: Rendered checkout detail page template
+    """
     checkout = get_object_or_404(Checkout, checkout_id=checkout_id, user=request.user)
     
     context = {

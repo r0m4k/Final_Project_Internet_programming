@@ -8,7 +8,10 @@
 {% block keywords %}contact bridge school, bridge lessons inquiry, bridge courses contact, bridge teacher application{% endblock %}
 
 {% block content %}
-<section class="contact section light-background" style="padding-top: 120px;">
+<main class="main">
+
+  <!-- Contact Section -->
+  <section class="contact section light-background" style="padding-top: 120px;">
   <div class="container" data-aos="fade-up">
     
     <!-- Page Header -->
@@ -238,38 +241,5 @@
 }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const contactForm = document.getElementById('contactForm');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!contactForm.checkValidity()) {
-                e.stopPropagation();
-                contactForm.classList.add('was-validated');
-                return;
-            }
-            
-            // Show loading state
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
-            
-            // Simulate form submission
-            setTimeout(() => {
-                alert('Thank you for your message! We\'ll get back to you within 24 hours.');
-                contactForm.reset();
-                contactForm.classList.remove('was-validated');
-                
-                // Restore button
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
-            }, 2000);
-        });
-    }
-});
-</script>
+
 {% endblock %} 

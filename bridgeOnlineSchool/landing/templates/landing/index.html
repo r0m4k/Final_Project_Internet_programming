@@ -5,13 +5,13 @@
   <main class="main">
 
     <!-- Hero Section -->
-    <section id="hero" class="hero section dark-background">
+    <section id="hero" class="hero section">
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="row align-items-center">
           <div class="col-lg-6">
             <div class="hero-content" data-aos="fade-up" data-aos-delay="500">
-              <h2>Bridge Online School</h2>
-              <p>The school that connects best teachers with best students in one click</p>
+              <h2 style="color: white;">Bridge Online School</h2>
+              <p style="color: white;">The school that connects best teachers with best students in one click</p>
               <div class="hero-btns">
                 <a href="#team" class="btn btn-primary rounded-pill">Find a teacher</a>
               </div>
@@ -202,32 +202,5 @@
 
   </main>
 
-  <script>
-    // Auto-scroll to teachers section after filtering
-    document.addEventListener('DOMContentLoaded', function() {
-      // Check if we have filter parameters in URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const hasFilters = urlParams.has('search') || urlParams.has('min_years') || 
-                        urlParams.has('max_years') || urlParams.has('sort_by') || urlParams.has('has_reviews');
-      
-      if (hasFilters) {
-        // Scroll to teachers section smoothly
-        setTimeout(function() {
-          document.getElementById('team').scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 100);
-      }
-      
-      // Add event listener to clear button for immediate scroll
-      const clearBtn = document.querySelector('.btn-clear[href*="landing:home"]');
-      if (clearBtn) {
-        clearBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          window.location.href = this.href + '#team';
-        });
-      }
-    });
-  </script>
+
 {% endblock %}

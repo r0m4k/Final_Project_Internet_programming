@@ -5,7 +5,12 @@ from django.utils import timezone
 import uuid
 
 class Purchase(models.Model):
-    """Model to represent individual lesson purchases"""
+    """
+    Represents individual lesson purchases within the bridge school platform.
+    
+    Tracks lesson bookings between students and teachers, including quantity,
+    pricing, communication preferences, and fulfillment status.
+    """
     purchase_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user_profile = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchases')
     teacher_profile = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='lesson_purchases')
@@ -13,7 +18,7 @@ class Purchase(models.Model):
     date = models.DateTimeField(default=timezone.now)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     
-    # Additional fields for better functionality
+    # Enhanced lesson coordination fields
     notes = models.TextField(blank=True, help_text='Special notes for the teacher')
     communication_method = models.CharField(max_length=100, blank=True, help_text='Preferred communication method')
     status = models.CharField(max_length=20, choices=[
@@ -35,23 +40,28 @@ class Purchase(models.Model):
         return f"Purchase {self.purchase_id} - {self.user_profile.username} -> {self.teacher_profile.first_name} {self.teacher_profile.last_name}"
     
     def save(self, *args, **kwargs):
-        # Auto-calculate total_price if not set
+        # Automatically calculate total price based on lesson quantity and teacher rate
         if not self.total_price:
             self.total_price = self.teacher_profile.lesson_price * self.number_of_lessons
         super().save(*args, **kwargs)
 
 
 class Checkout(models.Model):
-    """Model to represent a complete checkout session containing multiple purchases"""
+    """
+    Represents a complete checkout session encompassing multiple lesson purchases.
+    
+    Groups related purchases together for payment processing and order management.
+    Maintains transaction details and payment status for financial record-keeping.
+    """
     checkout_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     products = models.ManyToManyField(Purchase, related_name='checkouts', blank=True)
     
-    # Additional checkout information
+    # Core checkout session information
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='checkouts')
     checkout_date = models.DateTimeField(default=timezone.now)
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     
-    # Payment and status information
+    # Payment processing and transaction status
     payment_status = models.CharField(max_length=20, choices=[
         ('pending', 'Pending'),
         ('processing', 'Processing'),
@@ -69,7 +79,7 @@ class Checkout(models.Model):
     
     transaction_id = models.CharField(max_length=255, blank=True, help_text='External payment processor transaction ID')
     
-    # Contact information
+    # Customer billing details
     billing_email = models.EmailField()
     billing_name = models.CharField(max_length=100)
     
@@ -85,13 +95,18 @@ class Checkout(models.Model):
         return f"Checkout {self.checkout_id} - {self.user.username} (${self.total_amount})"
     
     def calculate_total(self):
-        """Calculate total amount from all associated purchases"""
+        """
+        Calculates the total checkout amount by summing all associated purchase prices.
+        
+        Returns:
+            Decimal: Total amount for all purchases in this checkout session
+        """
         total = sum(purchase.total_price for purchase in self.products.all())
         return total
     
     def save(self, *args, **kwargs):
-        # Auto-calculate total_amount if not set
-        if self.pk:  # Only if the checkout already exists (has products)
+        # Automatically update total amount when checkout is modified
+        if self.pk:  # Only calculate for existing checkouts with associated products
             self.total_amount = self.calculate_total()
         super().save(*args, **kwargs)
     

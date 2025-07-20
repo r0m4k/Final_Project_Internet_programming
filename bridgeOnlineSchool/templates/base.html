@@ -27,35 +27,24 @@
   <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
   <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
-  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
 
   <!-- Main CSS File -->
   <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: Consulting
-  * Template URL: https://bootstrapmade.com/bootstrap-consulting-website-template/
-  * Updated: May 01 2025 with Bootstrap v5.3.5
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+  <!-- JS Files -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+  <!-- Additional head content from child templates -->
+  {% block head_extra %}{% endblock %}
+
 </head>
 
 <body class="index-page">
 
     {% include 'navbar.html'%}
-
-    <!-- Messages Display -->
-    {% if messages %}
-        <div class="container mt-3">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
 
     {% block content %}
     {% endblock %}
@@ -68,9 +57,8 @@
           <i class="bi bi-geo-alt icon"></i>
           <div class="address">
             <h4>Address</h4>
-            <p>A108 Adam Street</p>
-            <p>New York, NY 535022</p>
-            <p></p>
+            <p>Athens, Greece</p>
+            <p>Syntagme Square</p>
           </div>
 
         </div>
@@ -80,8 +68,8 @@
           <div>
             <h4>Contact</h4>
             <p>
-              <strong>Phone:</strong> <span>+1 5589 55488 55</span><br>
-              <strong>Email:</strong> <span>info@example.com</span><br>
+              <strong>Phone:</strong> <span>+30 693 5410981</span><br>
+              <strong>Email:</strong> <span>bridge.online.school@google.com</span><br>
             </p>
           </div>
         </div>
@@ -101,26 +89,12 @@
           <h4>Follow Us</h4>
           <div class="social-links d-flex">
             <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
-            <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
             <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
           </div>
         </div>
 
       </div>
     </div>
-
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">Consulting.</strong> <span>All Rights Reserved</span></p>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-      </div>
-    </div>
-
   </footer>
 
   <!-- Scroll Top -->
@@ -128,198 +102,6 @@
 
   <!-- Preloader -->
   <div id="preloader"></div>
-
-  <!-- Vendor JS Files -->
-  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
-  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
-  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
-  <script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
-  <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
-
-  <!-- Main JS File -->
-  <script src="{% static 'assets/js/main.js' %}"></script>
-
-  <!-- Shopping Cart Count Update Script -->
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      updateCartCount();
-      
-      function updateCartCount() {
-          // Get cart count from localStorage
-          const cart = JSON.parse(localStorage.getItem('bridgeSchoolCart') || '{}');
-          const totalItems = Object.values(cart).reduce((total, item) => total + (item.quantity || 0), 0);
-          
-          const cartIconLink = document.getElementById('cart-icon-link');
-          const cartBadge = document.getElementById('cart-badge');
-          
-          if (cartIconLink && cartBadge) {
-              cartBadge.textContent = totalItems;
-              cartBadge.style.display = totalItems > 0 ? 'flex' : 'none';
-              // Show/hide entire cart icon based on cart contents
-              if (totalItems > 0) {
-                  cartIconLink.style.display = 'flex';
-                  cartIconLink.style.alignItems = 'center';
-                  cartIconLink.style.opacity = '1';
-              } else {
-                  cartIconLink.style.display = 'none';
-                  cartIconLink.style.opacity = '0';
-              }
-          }
-      }
-      
-      // Make updateCartCount available globally for other scripts
-      window.updateCartCount = updateCartCount;
-      
-      // Listen for localStorage changes to update cart count across tabs
-      window.addEventListener('storage', function(e) {
-          if (e.key === 'bridgeSchoolCart') {
-              updateCartCount();
-          }
-      });
-      
-      // Universal cart test function (available on all pages)
-      window.testCart = function() {
-          console.log('=== Testing Cart Functionality ===');
-          
-          // Test 1: localStorage support
-          console.log('1. Testing localStorage...');
-          try {
-              localStorage.setItem('test', 'value');
-              const testValue = localStorage.getItem('test');
-              localStorage.removeItem('test');
-              if (testValue === 'value') {
-                  console.log('✅ localStorage: WORKING');
-              } else {
-                  console.log('❌ localStorage: FAILED - value mismatch');
-                  return;
-              }
-          } catch (e) {
-              console.log('❌ localStorage: FAILED -', e.message);
-              return;
-          }
-          
-          // Test 2: Cart elements existence
-          console.log('2. Testing cart elements...');
-          const cartIconLink = document.getElementById('cart-icon-link');
-          const cartBadge = document.getElementById('cart-badge');
-          
-          if (cartIconLink && cartBadge) {
-              console.log('✅ Cart elements: FOUND');
-              console.log('  - Cart icon link:', cartIconLink);
-              console.log('  - Cart badge:', cartBadge);
-          } else {
-              console.log('❌ Cart elements: MISSING');
-              console.log('  - Cart icon link:', cartIconLink);
-              console.log('  - Cart badge:', cartBadge);
-              return;
-          }
-          
-          // Test 3: updateCartCount function
-          console.log('3. Testing updateCartCount function...');
-          if (typeof window.updateCartCount === 'function') {
-              console.log('✅ updateCartCount: AVAILABLE');
-          } else {
-              console.log('❌ updateCartCount: NOT AVAILABLE');
-          }
-          
-          // Test 4: Create test cart and update icon
-          console.log('4. Testing cart creation...');
-          try {
-              const testCart = {
-                  '999': {
-                      id: 999,
-                      first_name: 'Test',
-                      last_name: 'Teacher',
-                      title: 'Test Title',
-                      lesson_price: 50,
-                      avatar_url: '/test.jpg',
-                      quantity: 2,
-                      notes: '',
-                      communication_method: ''
-                  }
-              };
-              
-              localStorage.setItem('bridgeSchoolCart', JSON.stringify(testCart));
-              console.log('✅ Test cart saved to localStorage');
-              
-              // Update cart display
-              if (window.updateCartCount) {
-                  window.updateCartCount();
-                  console.log('✅ Cart count updated');
-              }
-              
-              // Check if cart icon is now visible
-              const cartIconStyle = window.getComputedStyle(cartIconLink);
-              const isVisible = cartIconStyle.display !== 'none';
-              
-              if (isVisible) {
-                  console.log('✅ Cart icon: NOW VISIBLE');
-                  console.log('✅ Badge text:', cartBadge.textContent);
-              } else {
-                  console.log('❌ Cart icon: STILL HIDDEN');
-                  console.log('  - Display style:', cartIconStyle.display);
-              }
-              
-              console.log('=== Test completed! Check navbar for cart icon (should show "2") ===');
-              
-          } catch (e) {
-              console.log('❌ Cart creation: FAILED -', e.message);
-          }
-      };
-      
-      // Clear test cart function
-      window.clearTestCart = function() {
-          localStorage.removeItem('bridgeSchoolCart');
-          if (window.updateCartCount) {
-              window.updateCartCount();
-          }
-          console.log('Test cart cleared');
-      };
-      
-      // Test purchase button functionality
-      window.testPurchaseButton = function() {
-          console.log('=== Testing Purchase Button ===');
-          
-          const buttons = document.querySelectorAll('.add-to-cart-btn');
-          console.log('Found purchase buttons:', buttons.length);
-          
-          if (buttons.length === 0) {
-              console.log('❌ No purchase buttons found on this page');
-              console.log('  - Make sure you are on a teacher detail page');
-              return;
-          }
-          
-          buttons.forEach((button, index) => {
-              console.log(`Button ${index + 1}:`);
-              console.log('  - Element:', button);
-              console.log('  - Teacher ID:', button.dataset.teacherId);
-              console.log('  - Teacher Name:', button.dataset.teacherFirstname, button.dataset.teacherLastname);
-              console.log('  - Price:', button.dataset.teacherPrice);
-              console.log('  - Avatar:', button.dataset.teacherAvatar);
-              
-              // Check if button is clickable
-              const style = window.getComputedStyle(button);
-              console.log('  - Pointer events:', style.pointerEvents);
-              console.log('  - Display:', style.display);
-              console.log('  - Visibility:', style.visibility);
-              
-              if (style.pointerEvents === 'none') {
-                  console.log('  ❌ Button not clickable (pointer-events: none)');
-              } else {
-                  console.log('  ✅ Button should be clickable');
-              }
-          });
-          
-          console.log('=== Test completed ===');
-      };
-      
-      console.log('Cart test functions available:');
-      console.log('- window.testCart() - Test cart functionality');
-      console.log('- window.clearTestCart() - Clear test cart');
-      console.log('- window.testPurchaseButton() - Test purchase buttons (teacher pages only)');
-  });
-  </script>
 
 </body>
 
