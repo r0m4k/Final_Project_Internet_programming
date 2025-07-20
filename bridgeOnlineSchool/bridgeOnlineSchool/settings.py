@@ -29,6 +29,15 @@ DEBUG = False
 # Allowed host domains - MUST be configured for production deployment
 ALLOWED_HOSTS = ['*']
 
+# Trusted origins for CSRF protection
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://0.0.0.0:8000',
+    # Add your production domain here
+    'https://final-project-internet-programming-roman.onrender.com',
+]
+
 
 # Django Application Registry
 
