@@ -165,26 +165,6 @@ class Checkout(models.Model):
 - Billing information storage for transaction records
 - Automatic total calculation from associated purchases
 
-### Model Relationships
-
-```
-User (Django Auth)
-├── OneToOne → Teacher (teacher_profile)
-├── ForeignKey → Rating (ratings)
-├── ForeignKey → Purchase (purchases)
-└── ForeignKey → Checkout (checkouts)
-
-Teacher
-├── ForeignKey → Rating (ratings)
-├── ForeignKey → Purchase (lesson_purchases)
-└── ManyToMany → Checkout (via Purchase)
-
-Purchase
-├── ManyToMany → Checkout (checkouts)
-├── ForeignKey → User (user_profile)
-└── ForeignKey → Teacher (teacher_profile)
-```
-
 ## 4. Technical Documentation: Non-Trivial Features
 
 ### Forgot Password Functionality
