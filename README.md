@@ -330,6 +330,8 @@ function proceedToCheckout() {
 - **Pending Checkout**: Unfinished checkouts saved for later completion
 - **Seamless UX**: No cart data loss during authentication process
 
+---
+
 ### Other Functionality Features
 
 #### **Teacher Approval System**
