@@ -330,7 +330,7 @@ function proceedToCheckout() {
 - **Pending Checkout**: Unfinished checkouts saved for later completion
 - **Seamless UX**: No cart data loss during authentication process
 
-### Advanced Features
+### Other Functionality Features
 
 #### **Teacher Approval System**
 - Teachers register with `is_active=False`
