@@ -38,10 +38,10 @@ Bridge Online School is a dynamic web platform that connects bridge instructors 
 - **About Us** (`/about-us/`): Platform information and mission
 - **Contact** (`/contact/`): Contact form and company information
 - **Teacher Profiles** (`/teachers/<id>`): View teacher details, reviews, and lesson information
+- **Shopping Cart** (`/cart/`): Add teachers to cart, manage quantities, proceed to checkout
 
 #### **Registered Students**
 - **Profile Management** (`/authentication/profile/`): Account settings, password changes
-- **Shopping Cart** (`/cart/`): Add teachers to cart, manage quantities, proceed to checkout
 - **Checkout** (`/cart/checkout/`): Complete lesson purchases with payment processing
 - **Purchase History** (`/cart/my-purchases/`): View past lesson bookings and status
 
