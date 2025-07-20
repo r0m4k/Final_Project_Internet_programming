@@ -40,15 +40,11 @@ Bridge Online School is a dynamic web platform that connects bridge instructors 
 - **Teacher Profiles** (`/teachers/<id>`): View teacher details, reviews, and lesson information
 - **Shopping Cart** (`/cart/`): Add teachers to cart, manage quantities, proceed to checkout
 
-#### **Registered Students**
+#### **Registered Users**
 - **Profile Management** (`/authentication/profile/`): Account settings, password changes
 - **Checkout** (`/cart/checkout/`): Complete lesson purchases with payment processing
-- **Purchase History** (`/cart/my-purchases/`): View past lesson bookings and status
-
-#### **Registered Teachers**
-- **Teacher Profile Creation** (`/authentication/profile/`): Create and manage teacher profiles
-- **Profile Status**: Teachers start as "pending" and require admin approval
-- **Review Management**: Receive and respond to student reviews
+- **Checkout success** (`/cart/checkout/success`): Invoice after the "payment" processing
+- **Profile Settings Managment** (`/authentication/profile/`): Create and manage profiles
 
 #### **Administrative Staff**
 - **Teacher Approval** (`/admin/approve-teacher/<id>/`): Activate pending teacher profiles
